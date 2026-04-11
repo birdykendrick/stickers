@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #FAF8F4;
+    color: #2D2926;
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: #F5C8A8;
+    color: #2D2926;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-charcoal text-cream font-sans font-medium px-6 py-3 rounded-full 
+           transition-all duration-200 hover:bg-charcoal/80 hover:scale-[1.02] active:scale-[0.98] 
+           shadow-soft cursor-pointer select-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 bg-transparent text-charcoal font-sans font-medium px-6 py-3 
+           rounded-full border-2 border-charcoal/20 transition-all duration-200 
+           hover:border-charcoal/40 hover:scale-[1.02] active:scale-[0.98] cursor-pointer select-none;
+  }
+
+  .btn-peach {
+    @apply inline-flex items-center gap-2 bg-peach text-charcoal font-sans font-medium px-6 py-3 
+           rounded-full transition-all duration-200 hover:bg-peach/80 hover:scale-[1.02] 
+           active:scale-[0.98] shadow-soft cursor-pointer select-none;
+  }
+
+  .card {
+    @apply bg-white rounded-3xl shadow-card overflow-hidden;
+  }
+
+  .section-pad {
+    @apply px-4 sm:px-6 lg:px-8 py-16 md:py-24;
+  }
+
+  .container-max {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .tag {
+    @apply inline-flex items-center text-xs font-mono font-medium px-2.5 py-1 rounded-full;
+  }
+
+  .input-field {
+    @apply w-full bg-white border-2 border-light-gray rounded-2xl px-4 py-3 
+           font-sans text-charcoal placeholder-warm-gray/60
+           focus:outline-none focus:border-dusty-blue transition-colors duration-200;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F2EDE4;
+}
+::-webkit-scrollbar-thumb {
+  background: #C8C0B8;
+  border-radius: 10px;
+}
