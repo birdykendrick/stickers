@@ -7,6 +7,7 @@ import StickerImage from '../components/StickerImage'
 import QuantitySelector from '../components/QuantitySelector'
 import ProductCard from '../components/ProductCard'
 import EmptyState from '../components/EmptyState'
+import { showToast } from '../components/Toast'
 
 const SERIES_COLORS = {
   duck: 'bg-butter/60 text-amber-700',
@@ -18,7 +19,7 @@ const SERIES_COLORS = {
 export default function ProductPage() {
   const { slug } = useParams()
   const product = getProductBySlug(slug)
-  const { addItem, openCart } = useCartStore()
+  const { addItem } = useCartStore()
 
   const [quantity, setQuantity] = useState(1)
   const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] || 'Standard')
@@ -45,7 +46,7 @@ export default function ProductPage() {
     addItem(product, selectedSize, quantity)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
-    openCart()
+    showToast(`${product.name} added to cart!`, '🛍️')
   }
 
   return (

@@ -18,10 +18,14 @@ export default function SectionHeader({ tag, title, subtitle, center = false }) 
         {title}
       </h2>
       {subtitle && (
-        <p className="font-sans text-warm-gray mt-3 text-base md:text-lg max-w-xl leading-relaxed">
-          {subtitle}
-        </p>
-      )}
+  <p
+    className={`font-sans text-warm-gray mt-3 text-base md:text-lg max-w-xl leading-relaxed ${
+      center ? 'mx-auto' : ''
+    }`}
+  >
+    {subtitle}
+  </p>
+)}
     </motion.div>
   )
 }

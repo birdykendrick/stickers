@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
 import StickerImage from './StickerImage'
+import { showToast } from './Toast'
 
 const SERIES_COLORS = {
   duck: 'bg-butter/60 text-amber-700',
@@ -11,13 +12,13 @@ const SERIES_COLORS = {
 }
 
 export default function ProductCard({ product, delay = 0 }) {
-  const { addItem, openCart } = useCartStore()
+  const { addItem } = useCartStore()
 
   const handleAddToCart = (e) => {
     e.preventDefault()
     e.stopPropagation()
     addItem(product)
-    openCart()
+    showToast(`${product.name} added!`, '🛍️')
   }
 
   return (

@@ -1,6 +1,7 @@
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import CartDrawer from '../components/CartDrawer'
+import ToastContainer from '../components/Toast'
 
 export default function MainLayout({ children }) {
   return (
@@ -11,6 +12,7 @@ export default function MainLayout({ children }) {
       </main>
       <Footer />
       <CartDrawer />
+      <ToastContainer />
     </div>
   )
 }

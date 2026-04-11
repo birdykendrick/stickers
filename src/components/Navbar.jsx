@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
+import logo from '../assets/logo.png'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -42,18 +43,14 @@ export default function Navbar() {
       >
         <div className="container-max px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-18">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
-              <span className="text-2xl animate-float">🌸</span>
-              <div className="flex flex-col leading-none">
-                <span className="font-display font-bold text-xl text-charcoal tracking-tight">
-                  smolstuck
-                </span>
-                <span className="text-[10px] font-mono text-warm-gray uppercase tracking-widest hidden sm:block">
-                  cute sticker shop
-                </span>
-              </div>
-            </Link>
+{/* Logo */}
+<Link to="/" className="flex items-center">
+  <img
+    src={logo}
+    alt="Stick Khoo logo"
+    className="h-9 w-auto object-contain"
+  />
+</Link>
 
             {/* Desktop Nav Links */}
             <div className="hidden md:flex items-center gap-8">

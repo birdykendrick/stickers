@@ -9,7 +9,6 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">🌸</span>
               <span className="font-display font-bold text-2xl text-charcoal">smolstuck</span>
             </div>
             <p className="font-sans text-warm-gray text-sm leading-relaxed max-w-xs">
@@ -70,7 +69,7 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-light-gray flex flex-col sm:flex-row items-center justify-between gap-2">
           <p className="font-mono text-xs text-warm-gray">
-            © 2025 smolstuck · Made with 🌸 in Singapore
+            © 2026 StickKhoo · Made in Singapore
           </p>
           <p className="font-mono text-xs text-warm-gray">
             Payment via PayNow · PayLah!

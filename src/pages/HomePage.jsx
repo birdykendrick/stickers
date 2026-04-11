@@ -4,6 +4,12 @@ import { getFeaturedProducts, getNewArrivals, SERIES } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import CollectionCard from '../components/CollectionCard'
 import SectionHeader from '../components/SectionHeader'
+import duckImg from '../assets/duck.png'
+import otterImg from '../assets/otter.png'
+import dogImg from '../assets/dog.png'
+import thinkingDuckImg from '../assets/thinkingduck.png'
+import sleepingDuckImg from '../assets/sleepingduck.png'
+import sleepyOtterImg from '../assets/sleepyotter.png'
 
 // ── Fade-up wrapper ──────────────────────────────────────────
 function FadeUp({ children, delay = 0, className = '' }) {
@@ -21,15 +27,15 @@ function FadeUp({ children, delay = 0, className = '' }) {
 }
 
 // ── Floating sticker decoration ──────────────────────────────
-function FloatingSticker({ emoji, className }) {
+function FloatingSticker({ src, duration = 4, className }) {
   return (
-    <motion.span
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 3 + Math.random() * 2, repeat: Infinity, ease: 'easeInOut' }}
-      className={`absolute text-4xl select-none pointer-events-none ${className}`}
-    >
-      {emoji}
-    </motion.span>
+    <motion.img
+      src={src}
+      alt=""
+      animate={{ y: [0, -14, 0] }}
+      transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
+      className={`absolute select-none pointer-events-none drop-shadow-lg object-contain ${className}`}
+    />
   )
 }
 
@@ -40,19 +46,67 @@ export default function HomePage() {
   return (
     <div>
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-cream">
+      <section className="relative min-h-[100vh] sm:min-h-[90vh] flex items-center overflow-hidden bg-cream">
         {/* Decorative blobs */}
         <div className="absolute top-20 right-10 w-72 h-72 bg-peach/20 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-56 h-56 bg-butter/30 rounded-full blur-2xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blush/10 rounded-full blur-3xl" />
 
-        {/* Floating stickers */}
-        <FloatingSticker emoji="🦆" className="top-28 right-[8%] opacity-80" />
-        <FloatingSticker emoji="🐧" className="top-40 right-[20%] opacity-60 text-3xl" />
-        <FloatingSticker emoji="🍜" className="bottom-32 right-[12%] opacity-70 text-3xl" />
-        <FloatingSticker emoji="🐱" className="bottom-40 left-[8%] opacity-60" />
-        <FloatingSticker emoji="🧋" className="top-32 left-[18%] opacity-50 text-2xl" />
-        <FloatingSticker emoji="🌸" className="bottom-28 left-[25%] opacity-40 text-2xl" />
+        {/* ── Floating stickers — positioned per breakpoint ── */}
+
+        {/* thinkingDuck — top right */}
+        <FloatingSticker src={thinkingDuckImg} duration={3.8}
+          className="
+            w-[110px]  top-[6%]  right-[4%]
+            sm:w-[120px] sm:top-[8%]  sm:right-[6%]
+            md:w-[155px] md:top-[10%] md:right-[17%]
+            opacity-95 z-0"
+        />
+
+        {/* duck — middle right */}
+        <FloatingSticker src={duckImg} duration={4.6}
+          className="
+            w-[90px]  top-[35%] right-[2%]
+            sm:w-[110px] sm:top-[38%] sm:right-[3%]
+            md:w-[150px] md:top-[42%] md:right-[5%]
+            opacity-85 z-0"
+        />
+
+        {/* sleepingDuck — bottom right */}
+        <FloatingSticker src={sleepingDuckImg} duration={5.1}
+          className="
+            w-[95px]  bottom-[9.8%]  right-[6%]
+            sm:w-[115px] sm:bottom-[10%] sm:right-[7%]
+            md:w-[158px] md:bottom-[10%]  md:right-[12%]
+            opacity-90 z-0"
+        />
+
+        {/* dog — top left */}
+        <FloatingSticker src={dogImg} duration={4.2}
+          className="
+            w-[85px]  top-[2.8%]  left-[8%]
+            sm:w-[110px] sm:top-[8%]  sm:left-[4%]
+            md:w-[140px] md:top-[10%] md:left-[12.5%]
+            opacity-85 z-0"
+        />
+
+        {/* otter — middle left */}
+        <FloatingSticker src={otterImg} duration={3.5}
+          className="
+            w-[0px]  top-[38%] left-[2%]
+            sm:w-[105px] sm:top-[40%] sm:left-[3%]
+            md:w-[160px] md:top-[42%] md:left-[5%]
+            opacity-80 z-0"
+        />
+
+        {/* sleepyOtter — bottom left */}
+        <FloatingSticker src={sleepyOtterImg} duration={4.9}
+          className="
+            w-[95px]  bottom-[8.4%]  left-[10%]
+            sm:w-[115px] sm:bottom-[9%]  sm:left-[5%]
+            md:w-[170px] md:bottom-[10%]  md:left-[15%]
+            opacity-90 z-0"
+        />
 
         <div className="container-max section-pad relative z-10">
           <div className="max-w-2xl">
@@ -95,12 +149,12 @@ export default function HomePage() {
             <FadeUp delay={0.4}>
               <div className="flex items-center gap-4 mt-10">
                 <div className="flex -space-x-2">
-                  {['🦆', '🐧', '🐱', '🍜'].map((e, i) => (
+                  {[duckImg, thinkingDuckImg, dogImg, otterImg, sleepingDuckImg, sleepyOtterImg].map((src, i) => (
                     <span
                       key={i}
-                      className="w-8 h-8 rounded-full bg-white shadow-soft flex items-center justify-center text-base border-2 border-cream"
+                      className="w-8 h-8 rounded-full bg-white shadow-soft flex items-center justify-center border-2 border-cream overflow-hidden"
                     >
-                      {e}
+                      <img src={src} alt="" className="w-6 h-6 object-contain" />
                     </span>
                   ))}
                 </div>
@@ -153,7 +207,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── NEW ARRIVALS ─────────────────────────────────────── */}
+      {/* ── NEW ARRIVALS ───────────────────────────────────────
       <section className="section-pad bg-parchment">
         <div className="container-max">
           <div className="flex items-end justify-between mb-10">
@@ -171,10 +225,10 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── HOW TO ORDER ─────────────────────────────────────── */}
-      <section id="how-to-order" className="section-pad">
+      <section id="how-to-order" className="section-pad bg-butter/20">
         <div className="container-max">
           <SectionHeader
             tag="How it works"
