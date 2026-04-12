@@ -86,7 +86,12 @@ export default function Navbar() {
                 onClick={openCart}
                 className="relative flex items-center gap-1.5 bg-charcoal text-cream rounded-full px-4 py-2 font-sans text-sm font-medium shadow-soft hover:bg-charcoal/80 transition-colors"
               >
-                <span>🛍️</span>
+                {/* Basket icon */}
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                  <line x1="3" y1="6" x2="21" y2="6"/>
+                  <path d="M16 10a4 4 0 01-8 0"/>
+                </svg>
                 <span className="hidden sm:inline">Cart</span>
                 {totalItems > 0 && (
                   <motion.span

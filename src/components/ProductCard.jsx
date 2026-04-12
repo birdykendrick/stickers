@@ -4,21 +4,25 @@ import { useCartStore } from '../store/cartStore'
 import StickerImage from './StickerImage'
 import { showToast } from './Toast'
 
-const SERIES_COLORS = {
-  duck: 'bg-butter/60 text-amber-700',
-  penguin: 'bg-blue-light/80 text-blue-800',
-  cat: 'bg-blush/60 text-rose-700',
-  'food-mood': 'bg-sage-light/60 text-green-800',
-}
-
 export default function ProductCard({ product, delay = 0 }) {
-  const { addItem } = useCartStore()
+  const { addItem, updateQuantity, items } = useCartStore()
 
-  const handleAddToCart = (e) => {
+  // Derive quantity directly from cart store so it stays in sync
+  const cartKey = `${product.id}-${product.sizes?.[0] || 'Standard'}`
+  const cartItem = items.find(i => i.key === cartKey)
+  const qty = cartItem?.quantity ?? 0
+
+  const handleDecrement = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    addItem(product)
-    showToast(`${product.name} added!`, '🛍️')
+    if (qty > 0) updateQuantity(cartKey, qty - 1)
+  }
+
+  const handleIncrement = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    addItem(product, product.sizes?.[0] || 'Standard', 1)
+    showToast(`${product.name} added!`, '🛒')
   }
 
   return (
@@ -30,53 +34,59 @@ export default function ProductCard({ product, delay = 0 }) {
     >
       <Link to={`/product/${product.slug}`} className="block group">
         <motion.div
-          whileHover={{ y: -4 }}
+          whileHover={{ y: -3 }}
           transition={{ duration: 0.2 }}
-          className="bg-white rounded-3xl shadow-card hover:shadow-card-hover transition-shadow duration-300 overflow-hidden"
+          className="bg-white rounded-2xl overflow-hidden border border-light-gray hover:border-charcoal/15 hover:shadow-card transition-all duration-300"
         >
-          {/* Image area */}
-          <div className="relative overflow-hidden rounded-t-3xl">
+          {/* Image */}
+          <div className="relative overflow-hidden">
             <StickerImage
               product={product}
               size="md"
               className="w-full aspect-square"
             />
-
-            {/* Badges */}
-            <div className="absolute top-3 left-3 flex gap-2">
-              {product.newArrival && (
-                <span className="tag bg-charcoal text-cream">✦ New</span>
-              )}
-              {product.popular && (
-                <span className="tag bg-peach text-charcoal">Popular</span>
-              )}
-            </div>
-
-            {/* Quick add overlay */}
-            <div className="absolute inset-0 bg-charcoal/0 group-hover:bg-charcoal/5 transition-colors duration-300" />
-            <motion.button
-              whileTap={{ scale: 0.96 }}
-              onClick={handleAddToCart}
-              className="absolute bottom-3 right-3 bg-charcoal text-cream text-xs font-medium px-3 py-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-soft hover:bg-charcoal/80"
-            >
-              + Add to Cart
-            </motion.button>
+            {(product.newArrival || product.popular) && (
+              <div className="absolute top-2.5 left-2.5 flex gap-1.5">
+                {product.newArrival && (
+                  <span className="text-[10px] font-mono font-semibold bg-charcoal text-cream px-2 py-0.5 rounded-full">New</span>
+                )}
+                {product.popular && (
+                  <span className="text-[10px] font-mono font-semibold bg-peach text-charcoal px-2 py-0.5 rounded-full">Popular</span>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Info */}
-          <div className="p-4">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0">
-                <span className={`tag ${SERIES_COLORS[product.series] || 'bg-light-gray text-warm-gray'} mb-2`}>
-                  {product.seriesName}
-                </span>
-                <h3 className="font-sans font-semibold text-charcoal text-sm leading-snug truncate">
-                  {product.name}
-                </h3>
-              </div>
-              <span className="font-mono font-medium text-charcoal text-sm whitespace-nowrap">
-                ${product.price.toFixed(2)}
+          {/* Info + stepper */}
+          <div className="px-3 py-3">
+            <p className="font-sans font-medium text-charcoal text-sm leading-snug truncate">
+              {product.name}
+            </p>
+            <p className="font-mono text-xs text-warm-gray mt-0.5">
+              ${product.price.toFixed(2)}
+            </p>
+
+            {/* Quantity stepper — reads from cart store, always in sync */}
+            <div
+              className="flex items-center justify-between mt-3 bg-parchment rounded-xl overflow-hidden border border-light-gray"
+              onClick={e => e.preventDefault()}
+            >
+              <button
+                onClick={handleDecrement}
+                disabled={qty === 0}
+                className="w-9 h-9 flex items-center justify-center text-warm-gray hover:text-charcoal disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium text-base"
+              >
+                −
+              </button>
+              <span className="font-mono text-sm text-charcoal font-medium min-w-[1.5rem] text-center">
+                {qty}
               </span>
+              <button
+                onClick={handleIncrement}
+                className="w-9 h-9 flex items-center justify-center text-warm-gray hover:text-charcoal transition-colors font-medium text-base"
+              >
+                +
+              </button>
             </div>
           </div>
         </motion.div>

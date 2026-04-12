@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import MainLayout from './layouts/MainLayout'
+import ScrollToTop from './components/ScrollToTop'
 
 import HomePage from './pages/HomePage'
 import ShopPage from './pages/ShopPage'
@@ -13,6 +14,7 @@ import AboutPage from './pages/AboutPage'
 export default function App() {
   return (
     <MainLayout>
+      <ScrollToTop />
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<HomePage />} />

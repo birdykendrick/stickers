@@ -9,12 +9,12 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <span className="font-display font-bold text-2xl text-charcoal">smolstuck</span>
+              <span className="font-display font-bold text-2xl text-charcoal">StickKhoo</span>
             </div>
             <p className="font-sans text-warm-gray text-sm leading-relaxed max-w-xs">
               Tiny stickers for big feelings. Hand-drawn with love, shipped with care, from Singapore to you.
             </p>
-            <div className="flex gap-3 mt-5">
+            {/* <div className="flex gap-3 mt-5">
               {['Instagram', 'TikTok', 'Telegram'].map(s => (
                 <a
                   key={s}
@@ -24,7 +24,7 @@ export default function Footer() {
                   {s}
                 </a>
               ))}
-            </div>
+            </div> */}
           </div>
 
           {/* Collections */}

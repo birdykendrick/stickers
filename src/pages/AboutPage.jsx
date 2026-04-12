@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import sunglassDuckImg from '../assets/sunglassduck.png'
 
 function FadeUp({ children, delay = 0, className = '' }) {
   return (
@@ -34,11 +35,6 @@ export default function AboutPage() {
               <em className="italic font-normal text-warm-gray">shipped with care.</em>
             </h1>
           </FadeUp>
-          <FadeUp delay={0.2}>
-            <p className="font-sans text-warm-gray text-xl mt-6 leading-relaxed">
-              smolstuck is a small Singapore sticker shop born from notebook doodles and the firm belief that the right sticker can say what words can't.
-            </p>
-          </FadeUp>
         </div>
       </section>
 
@@ -57,16 +53,16 @@ export default function AboutPage() {
             <FadeUp delay={0.15}>
               <div className="space-y-4 font-sans text-warm-gray leading-relaxed">
                 <p>
-                  Hi! I'm the person behind smolstuck. I've always loved doodling — little animals with too many feelings, food with emotional baggage, characters that just <em>get it</em>.
+                  Hi! I'm the person behind StickKhoo. I'm 15, and I've always loved drawing cute little characters especially animals with their own tiny emotions and personalities.
                 </p>
                 <p>
-                  What started as sketches in the margins of my notes became stickers I wanted to stick everywhere. My friends kept asking where to buy them. So I made a shop.
+                  StickKhoo started as notebook doodles and slowly turned into expressive characters with stories of their own. What began as small sketches became stickers that capture everyday feelings in a fun, simple, and personal way.
                 </p>
                 <p>
-                  Every sticker is drawn by hand, designed with care, and printed on premium waterproof vinyl. They're made to outlast rainstorms, dishwashers, and bad days alike.
+                  I wanted to create designs that feel soft, playful, and easy to connect with little stickers that can brighten someone's day or say something words sometimes can't.
                 </p>
                 <p className="text-charcoal font-medium">
-                  Smolstuck is for everyone who's ever felt too much and needed something cute to show for it. 🌿
+                  Every sticker is made with love, imagination, and a lot of heart. ♡
                 </p>
               </div>
             </FadeUp>
@@ -76,25 +72,46 @@ export default function AboutPage() {
 
       {/* Values */}
       <section className="section-pad bg-parchment">
-        <div className="container-max max-w-3xl">
-          <FadeUp>
-            <h2 className="font-display font-bold text-3xl text-charcoal mb-8">What we're about</h2>
-          </FadeUp>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {[
-              { emoji: '✏️', title: 'Original art', desc: 'Every sticker is hand-drawn. No stock art, no AI, no shortcuts.' },
-              { emoji: '🌿', title: 'Small batch', desc: 'We print in small runs to keep things special and avoid waste.' },
-              { emoji: '🇸🇬', title: 'Made in SG', desc: 'Designed, packed, and shipped from Singapore with love.' },
-            ].map((v, i) => (
-              <FadeUp key={v.title} delay={i * 0.1}>
-                <div className="bg-white rounded-3xl p-6 shadow-card">
-                  <span className="text-4xl block mb-3">{v.emoji}</span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
+          {[
+            {
+              title: 'Original art',
+              desc: 'Every sticker is hand-drawn. No stock art, no AI, no shortcuts.',
+              icon: (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                </svg>
+              ),
+            },
+            {
+              title: 'Small batch',
+              desc: 'We print in small runs to keep things special and avoid waste.',
+              icon: (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                  <polyline points="2 17 12 22 22 17" />
+                  <polyline points="2 12 12 17 22 12" />
+                </svg>
+              ),
+            },
+            {
+              title: 'Made in SG',
+              desc: 'Designed, packed, and shipped from Singapore with love.',
+              icon: <span className="text-2xl">🇸🇬</span>,
+            },
+          ].map((v, i) => (
+            <FadeUp key={v.title} delay={i * 0.1}>
+              <div className="bg-white rounded-3xl p-6 shadow-card h-full">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-9 h-9 rounded-xl bg-parchment flex items-center justify-center text-charcoal flex-shrink-0">
+                    {v.icon}
+                  </div>
                   <h3 className="font-sans font-semibold text-charcoal">{v.title}</h3>
-                  <p className="font-sans text-sm text-warm-gray mt-1 leading-relaxed">{v.desc}</p>
                 </div>
-              </FadeUp>
-            ))}
-          </div>
+                <p className="font-sans text-sm text-warm-gray leading-relaxed">{v.desc}</p>
+              </div>
+            </FadeUp>
+          ))}
         </div>
       </section>
 
@@ -112,7 +129,7 @@ export default function AboutPage() {
               },
               {
                 q: 'How do I pay?',
-                a: 'We accept PayNow and DBS PayLah!. After checkout, scan our QR code and send us proof of payment via Instagram or Telegram.',
+                a: 'We accept PayNow and DBS PayLah!. After checkout, scan our QR code and send us proof of payment via WhatsApp.',
               },
               {
                 q: 'How long does shipping take?',
@@ -120,11 +137,11 @@ export default function AboutPage() {
               },
               {
                 q: 'Do you ship internationally?',
-                a: 'Currently Singapore only. International shipping is in the works — follow us for updates!',
+                a: 'Currently Singapore only. International shipping is in the works.',
               },
               {
                 q: 'Can I order custom stickers?',
-                a: 'We don\'t do custom orders right now, but DM us on Instagram — we love hearing ideas for new designs!',
+                a: 'Yes! We do custom sticker orders. Pricing depends on the design, size, quantity, and other details. DM us on WhatsApp and we’ll work something out with you.',
               },
             ].map((faq, i) => (
               <FadeUp key={i} delay={i * 0.06}>
@@ -142,7 +159,7 @@ export default function AboutPage() {
       <section className="section-pad bg-charcoal text-cream">
         <div className="container-max max-w-xl text-center">
           <FadeUp>
-            <span className="text-5xl block mb-4">🌸</span>
+            <img src={sunglassDuckImg} alt="" className="w-20 h-20 object-contain mx-auto mb-4" />
             <h2 className="font-display font-bold text-4xl">Ready to stick around?</h2>
             <p className="font-sans text-cream/70 mt-3 leading-relaxed">
               Browse the shop and find the stickers that speak your language.
