@@ -29,6 +29,23 @@ function FadeUp({ children, delay = 0, className = '' }) {
 
 // ── Floating sticker decoration ──────────────────────────────
 function FloatingSticker({ src, duration = 4, className }) {
+  const prefersReducedMotion =
+    typeof window !== 'undefined'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false
+  const isMobile =
+    typeof window !== 'undefined' ? window.innerWidth < 768 : false
+
+  if (isMobile || prefersReducedMotion) {
+    return (
+      <img
+        src={src}
+        alt=""
+        className={`absolute select-none pointer-events-none drop-shadow-lg object-contain ${className}`}
+      />
+    )
+  }
+
   return (
     <motion.img
       src={src}
