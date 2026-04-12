@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import sunglassDuckImg from '../assets/sunglassduck.png'
+import aboutMePhoto from '../assets/aboutmephoto.png'
 
 function FadeUp({ children, delay = 0, className = '' }) {
   return (
@@ -43,12 +44,9 @@ export default function AboutPage() {
         <div className="container-max max-w-3xl">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <FadeUp>
-              <div className="rounded-4xl bg-butter/30 aspect-square flex items-center justify-center">
-                <div className="text-center">
-                  <span className="text-8xl block">🌸</span>
-                  <span className="text-6xl block mt-2">✏️</span>
-                </div>
-              </div>
+              <div className="rounded-4xl overflow-hidden">
+  <img src={aboutMePhoto} alt="About me" className="w-full h-auto object-contain" />
+</div>
             </FadeUp>
             <FadeUp delay={0.15}>
               <div className="space-y-4 font-sans text-warm-gray leading-relaxed">

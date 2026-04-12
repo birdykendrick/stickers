@@ -16,13 +16,60 @@ const SERIES_COLORS = {
   'food-mood': 'bg-sage-light/60 text-green-800',
 }
 
+// Fallback sizes if product doesn't define its own
+const DEFAULT_SIZES = [
+  { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+  { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+]
+
+const NOTES = [
+  {
+    text: 'Premium waterproof vinyl',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+    ),
+  },
+  {
+    text: 'Pre-cut, easy to peel',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/>
+        <line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/>
+        <line x1="8.12" y1="8.12" x2="12" y2="12"/>
+      </svg>
+    ),
+  },
+  {
+    text: 'Ships within 2–4 working days via SingPost',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    ),
+  },
+  {
+    text: 'Free shipping for orders above $10!',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+      </svg>
+    ),
+  },
+]
+
 export default function ProductPage() {
   const { slug } = useParams()
   const product = getProductBySlug(slug)
   const { addItem } = useCartStore()
 
+  // Use per-product sizeOptions if defined, else fall back to defaults
+  const sizes = product?.sizeOptions?.length > 0 ? product.sizeOptions : DEFAULT_SIZES
+
   const [quantity, setQuantity] = useState(1)
-  const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0] || 'Standard')
+  const [selectedSize, setSelectedSize] = useState(sizes[0])
   const [added, setAdded] = useState(false)
 
   if (!product) {
@@ -43,17 +90,17 @@ export default function ProductPage() {
   const related = getRelatedProducts(product)
 
   const handleAddToCart = () => {
-    addItem(product, selectedSize, quantity)
+    addItem({ ...product, price: selectedSize.price }, selectedSize.label, quantity)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
-    showToast(`${product.name} added to cart!`, '🛍️')
+    showToast(`${product.name} added to cart!`, '🛒')
   }
 
   return (
     <div className="section-pad">
       <div className="container-max">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 font-mono text-xs text-warm-gray mb-8">
+        <nav className="flex items-center gap-2 font-mono text-xs text-warm-gray mb-6">
           <Link to="/" className="hover:text-charcoal transition-colors">Home</Link>
           <span>/</span>
           <Link to="/shop" className="hover:text-charcoal transition-colors">Shop</Link>
@@ -65,38 +112,27 @@ export default function ProductPage() {
           <span className="text-charcoal">{product.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="rounded-4xl overflow-hidden aspect-square shadow-card">
-              <StickerImage product={product} size="xl" className="w-full h-full" />
-            </div>
+        {/* Mobile: stacked. Desktop: side by side */}
+        <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-16">
 
-            {/* Thumbnail row — same image for now, replace with alternates */}
-            <div className="flex gap-3 mt-4">
-              {[0, 1].map(i => (
-                <div
-                  key={i}
-                  className={`w-16 h-16 rounded-2xl overflow-hidden shadow-soft cursor-pointer border-2 transition-colors ${
-                    i === 0 ? 'border-charcoal' : 'border-transparent hover:border-charcoal/20'
-                  }`}
-                >
-                  <StickerImage product={product} size="sm" className="w-full h-full" />
-                </div>
-              ))}
+          {/* Image — smaller on mobile */}
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="w-2/3 sm:w-1/2 lg:w-full mx-auto lg:mx-0 mb-6 lg:mb-0"
+          >
+            <div className="rounded-3xl overflow-hidden aspect-square shadow-card">
+              <StickerImage product={product} size="xl" className="w-full h-full" />
             </div>
           </motion.div>
 
           {/* Info */}
           <motion.div
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="flex flex-col gap-6"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="flex flex-col gap-5"
           >
             {/* Badges */}
             <div className="flex gap-2 flex-wrap">
@@ -107,38 +143,36 @@ export default function ProductPage() {
               {product.popular && <span className="tag bg-peach text-charcoal">Popular</span>}
             </div>
 
-            {/* Title & price */}
+            {/* Title & price — updates with selected size */}
             <div>
-              <h1 className="font-display font-bold text-4xl text-charcoal">{product.name}</h1>
-              <p className="font-mono font-bold text-2xl text-charcoal mt-2">
-                ${product.price.toFixed(2)}
+              <h1 className="font-display font-bold text-3xl md:text-4xl text-charcoal">{product.name}</h1>
+              <p className="font-mono font-bold text-2xl text-charcoal mt-1">
+                ${selectedSize.price.toFixed(2)}
               </p>
             </div>
 
             {/* Description */}
-            <p className="font-sans text-warm-gray leading-relaxed">{product.description}</p>
+            <p className="font-sans text-warm-gray text-sm leading-relaxed">{product.description}</p>
 
             {/* Size selector */}
-            {product.sizes && product.sizes.length > 0 && (
-              <div>
-                <p className="font-sans font-semibold text-charcoal text-sm mb-2">Size</p>
-                <div className="flex gap-2 flex-wrap">
-                  {product.sizes.map(size => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2 rounded-full font-mono text-xs border-2 transition-all ${
-                        selectedSize === size
-                          ? 'bg-charcoal text-cream border-charcoal'
-                          : 'bg-white text-warm-gray border-light-gray hover:border-charcoal/30'
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
+            <div>
+              <p className="font-sans font-semibold text-charcoal text-sm mb-2">Size</p>
+              <div className="flex gap-2 flex-wrap">
+                {sizes.map(size => (
+                  <button
+                    key={size.label}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-full font-mono text-xs border-2 transition-all ${
+                      selectedSize.label === size.label
+                        ? 'bg-charcoal text-cream border-charcoal'
+                        : 'bg-white text-warm-gray border-light-gray hover:border-charcoal/30'
+                    }`}
+                  >
+                    {size.label} — ${size.price.toFixed(2)}
+                  </button>
+                ))}
               </div>
-            )}
+            </div>
 
             {/* Quantity */}
             <div>
@@ -147,40 +181,34 @@ export default function ProductPage() {
             </div>
 
             {/* Add to cart */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <motion.button
-                whileTap={{ scale: 0.97 }}
-                onClick={handleAddToCart}
-                className={`btn-primary flex-1 justify-center text-base py-4 transition-all ${
-                  added ? 'bg-sage text-white' : ''
-                }`}
-              >
-                {added ? '✓ Added to Cart!' : '🛍️ Add to Cart'}
-              </motion.button>
-              <Link to="/checkout" className="btn-secondary flex-1 justify-center text-base py-4 text-center">
-                Buy Now
-              </Link>
-            </div>
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleAddToCart}
+              className={`btn-primary justify-center text-base py-4 transition-all ${
+                added ? 'bg-sage text-white' : ''
+              }`}
+            >
+              {added ? (
+                '✓ Added to Cart!'
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 01-8 0"/>
+                  </svg>
+                  Add to Cart
+                </>
+              )}
+            </motion.button>
 
             {/* Notes */}
-            <div className="bg-parchment rounded-2xl p-5 space-y-2">
-              {[
-                { emoji: '🌟', text: 'Premium waterproof vinyl' },
-                { emoji: '✂️', text: 'Pre-cut, easy to peel' },
-                { emoji: '🚿', text: 'Dishwasher & weather safe' },
-                { emoji: '📦', text: 'Ships within 3–5 working days' },
-              ].map(n => (
-                <div key={n.text} className="flex items-center gap-3">
-                  <span className="text-base">{n.emoji}</span>
-                  <span className="font-sans text-sm text-warm-gray">{n.text}</span>
+            <div className="bg-parchment rounded-2xl p-4 space-y-3">
+              {NOTES.map(n => (
+                <div key={n.text} className="flex items-center gap-3 text-warm-gray">
+                  <span className="flex-shrink-0">{n.icon}</span>
+                  <span className="font-sans text-sm">{n.text}</span>
                 </div>
-              ))}
-            </div>
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              {product.tags.map(tag => (
-                <span key={tag} className="tag bg-light-gray text-warm-gray">#{tag}</span>
               ))}
             </div>
           </motion.div>
@@ -188,7 +216,7 @@ export default function ProductPage() {
 
         {/* Related products */}
         {related.length > 0 && (
-          <div className="mt-20">
+          <div className="mt-16">
             <h2 className="font-display font-bold text-2xl text-charcoal mb-6">
               More from {product.seriesName}
             </h2>

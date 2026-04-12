@@ -91,7 +91,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['sleepy', 'relatable', 'mood'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FEF9E7',
   },
   {
@@ -108,7 +111,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: false,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['rainy', 'sad', 'cute'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#EBF5FB',
   },
   {
@@ -125,7 +131,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['bread', 'food', 'happy'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FEF5E0',
   },
   {
@@ -142,7 +151,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: false,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['dramatic', 'funny', 'expressive'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FFF0E6',
   },
 
@@ -161,7 +173,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['busy', 'work', 'relatable'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#EBF5FB',
   },
   {
@@ -178,7 +193,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['bread', 'happy', 'food'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FEF9E7',
   },
   {
@@ -195,7 +213,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: false,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['tired', 'sleepy', 'mood'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#EDE4F5',
   },
   {
@@ -212,7 +233,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['study', 'school', 'relatable'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#E8F5E9',
   },
 
@@ -231,7 +255,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)', 'Large (10cm)'],
-    tags: ['cute', 'round', 'soft'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FDEDEC',
   },
   {
@@ -248,7 +275,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: false,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['study', 'school', 'judgy'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#EEF2FF',
   },
   {
@@ -265,7 +295,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['grumpy', 'mood', 'expressive'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FFF3E0',
   },
   {
@@ -282,7 +315,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: false,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['crying', 'emotional', 'relatable'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#E3F2FD',
   },
 
@@ -301,7 +337,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['toast', 'grumpy', 'food'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FEF9E7',
   },
   {
@@ -318,7 +357,10 @@ export const PRODUCTS = [
     newArrival: false,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['noodle', 'sad', 'food'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#FFF8E1',
   },
   {
@@ -335,7 +377,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: false,
     sizes: ['Small (5cm)', 'Medium (7cm)'],
-    tags: ['egg', 'existential', 'funny'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#F5F5F5',
   },
   {
@@ -352,7 +397,10 @@ export const PRODUCTS = [
     newArrival: true,
     popular: true,
     sizes: ['Small (5cm)', 'Medium (7cm)', 'Large (10cm)'],
-    tags: ['boba', 'panic', 'sg', 'iconic'],
+    sizeOptions: [
+      { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+      { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+    ],
     color: '#F3E5F5',
   },
 ]
