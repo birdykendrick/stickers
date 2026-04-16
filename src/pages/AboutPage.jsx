@@ -45,19 +45,19 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
             <FadeUp>
               <div className="rounded-4xl overflow-hidden">
-  <img src={aboutMePhoto} alt="About me" className="w-full h-auto object-contain" />
-</div>
+                <img src={aboutMePhoto} alt="About me" className="w-full h-auto object-contain" />
+              </div>
             </FadeUp>
             <FadeUp delay={0.15}>
               <div className="space-y-4 font-sans text-warm-gray leading-relaxed">
                 <p>
-                  Hi! I'm the person behind StickKhoo. I'm 15, and I've always loved drawing cute little characters especially animals with their own tiny emotions and personalities.
+                  Hi! I’m the person behind StickKhoo. I’ve always loved drawing cute little characters, especially animals with their own tiny emotions and personalities.
                 </p>
                 <p>
-                  StickKhoo started as notebook doodles and slowly turned into expressive characters with stories of their own. What began as small sketches became stickers that capture everyday feelings in a fun, simple, and personal way.
+                  StickKhoo started as notebook doodles and slowly grew into expressive little characters with stories of their own. What began as small sketches became stickers that capture everyday feelings in a fun, simple, and personal way.
                 </p>
                 <p>
-                  I wanted to create designs that feel soft, playful, and easy to connect with little stickers that can brighten someone's day or say something words sometimes can't.
+                  I wanted to create designs that feel soft, playful, and easy to connect with little stickers that can brighten someone’s day or say something words sometimes can’t.
                 </p>
                 <p className="text-charcoal font-medium">
                   Every sticker is made with love, imagination, and a lot of heart. ♡

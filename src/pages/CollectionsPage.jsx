@@ -30,7 +30,20 @@ export default function CollectionsPage() {
               className="rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center gap-6"
               style={{ backgroundColor: series.bgColor }}
             >
-              <span className="text-6xl flex-shrink-0">{series.emoji}</span>
+              {/* Cover image or emoji fallback */}
+              <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center">
+                {series.coverImage ? (
+                  <img
+                    src={series.coverImage}
+                    alt={series.name}
+                    className="w-full h-full object-contain drop-shadow-md select-none"
+                    draggable={false}
+                  />
+                ) : (
+                  <span className="text-6xl">{series.emoji}</span>
+                )}
+              </div>
+
               <div className="flex-1 text-center md:text-left">
                 <h3 className="font-display font-bold text-2xl text-charcoal">{series.name}</h3>
                 <p className="font-sans text-warm-gray text-sm mt-2 leading-relaxed">{series.description}</p>

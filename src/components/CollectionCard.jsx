@@ -20,13 +20,24 @@ export default function CollectionCard({ series, delay = 0 }) {
           style={{ backgroundColor: series.bgColor }}
         >
           <div className="p-8 flex flex-col items-center text-center gap-4">
-            <motion.span
-              whileHover={{ scale: 1.1, rotate: 5 }}
+            {/* Cover image or emoji fallback */}
+            <motion.div
+              whileHover={{ scale: 1.08, rotate: 2 }}
               transition={{ type: 'spring', stiffness: 400 }}
-              className="text-6xl"
+              className="w-24 h-24 flex items-center justify-center"
             >
-              {series.emoji}
-            </motion.span>
+              {series.coverImage ? (
+                <img
+                  src={series.coverImage}
+                  alt={series.name}
+                  className="w-full h-full object-contain drop-shadow-md select-none"
+                  draggable={false}
+                />
+              ) : (
+                <span className="text-6xl">{series.emoji}</span>
+              )}
+            </motion.div>
+
             <div>
               <h3 className="font-display font-bold text-2xl text-charcoal">{series.name}</h3>
               <p className="font-mono text-xs text-warm-gray mt-1">{count} stickers</p>

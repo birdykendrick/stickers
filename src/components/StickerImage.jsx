@@ -1,8 +1,21 @@
-// StickerImage.jsx
-// Since we don't have real images, this renders a beautiful sticker-card visual
-// Replace with <img src={product.imageUrl} /> when you have real artwork
-
 export default function StickerImage({ product, className = '', size = 'md' }) {
+  if (product.imageUrl) {
+    return (
+      <div
+        className={`relative flex items-center justify-center overflow-hidden ${className}`}
+        style={{ backgroundColor: product.color || '#FAF8F4' }}
+      >
+        <img
+          src={product.imageUrl}
+          alt={product.name}
+          className="w-full h-full object-contain select-none"
+          draggable={false}
+        />
+      </div>
+    )
+  }
+
+  // Fallback for any products without images
   const sizeMap = {
     sm: 'text-4xl',
     md: 'text-6xl',

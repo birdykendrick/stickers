@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useCartStore } from '../store/cartStore'
 import CartItem from './CartItem'
+import thinkingDuck from '../assets/teleduck/thinking.png'
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart } = useCartStore()
@@ -31,7 +32,15 @@ export default function CartDrawer() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-light-gray">
               <div>
-                <h2 className="font-display font-bold text-xl text-charcoal">Your Cart 🛍️</h2>
+                <h2 className="font-display font-bold text-xl text-charcoal flex items-center gap-2">
+                  {/* Shopping bag icon — same as navbar cart button */}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 01-8 0"/>
+                  </svg>
+                  Your Cart
+                </h2>
                 <p className="font-mono text-xs text-warm-gray mt-0.5">
                   {items.length === 0 ? 'Empty for now' : `${items.reduce((s,i)=>s+i.quantity,0)} item(s)`}
                 </p>
@@ -48,7 +57,7 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto px-6 py-4">
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center h-full text-center gap-4 py-16">
-                  <span className="text-6xl">🌿</span>
+                  <img src={thinkingDuck} alt="" className="w-24 h-24 object-contain" />
                   <div>
                     <p className="font-display font-semibold text-charcoal text-lg">Nothing here yet</p>
                     <p className="font-sans text-warm-gray text-sm mt-1">Add some cute stickers to get started!</p>

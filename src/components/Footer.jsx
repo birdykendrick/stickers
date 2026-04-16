@@ -14,17 +14,6 @@ export default function Footer() {
             <p className="font-sans text-warm-gray text-sm leading-relaxed max-w-xs">
               Tiny stickers for big feelings. Hand-drawn with love, shipped with care, from Singapore to you.
             </p>
-            {/* <div className="flex gap-3 mt-5">
-              {['Instagram', 'TikTok', 'Telegram'].map(s => (
-                <a
-                  key={s}
-                  href="#"
-                  className="text-xs font-mono bg-white text-warm-gray px-3 py-1.5 rounded-full border border-light-gray hover:border-charcoal/20 hover:text-charcoal transition-colors"
-                >
-                  {s}
-                </a>
-              ))}
-            </div> */}
           </div>
 
           {/* Collections */}
@@ -35,9 +24,14 @@ export default function Footer() {
                 <li key={s.id}>
                   <Link
                     to={`/collections/${s.slug}`}
-                    className="font-sans text-sm text-warm-gray hover:text-charcoal transition-colors"
+                    className="font-sans text-sm text-warm-gray hover:text-charcoal transition-colors flex items-center gap-2"
                   >
-                    {s.emoji} {s.name}
+                    {s.coverImage ? (
+                      <img src={s.coverImage} alt="" className="w-5 h-5 object-contain flex-shrink-0" />
+                    ) : (
+                      <span>{s.emoji}</span>
+                    )}
+                    {s.name}
                   </Link>
                 </li>
               ))}
