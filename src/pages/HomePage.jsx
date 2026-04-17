@@ -227,10 +227,9 @@ export default function HomePage() {
           <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
 
-          <motion.div
+          <div
             className="flex gap-5 items-stretch"
-            animate={{ x: ['0%', '-50%'] }}
-            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+            style={{ animation: 'marquee 20s linear infinite' }}
           >
             {/* Duplicate all series for seamless loop */}
             {[...SERIES, ...SERIES].map((series, i) => (
@@ -238,7 +237,7 @@ export default function HomePage() {
                 <CollectionCard series={series} delay={0} />
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
 
         <div className="container-max mt-2 flex justify-center">
@@ -337,10 +336,10 @@ export default function HomePage() {
       {/* ── ABOUT STRIP ──────────────────────────────────────── */}
       <section className="section-pad bg-charcoal text-cream overflow-hidden relative">
         <img
-  src={forheaderImg}
-  alt=""
-  className="absolute right-0 top-0 bottom-0 h-full w-auto object-contain opacity-20 select-none pointer-events-none"
-/>
+          src={forheaderImg}
+          alt=""
+          className="absolute right-0 top-0 bottom-0 h-full w-auto object-contain opacity-20 select-none pointer-events-none"
+        />
         <div className="container-max relative z-10">
           <div className="max-w-xl">
             <FadeUp>
