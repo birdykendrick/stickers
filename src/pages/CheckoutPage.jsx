@@ -24,10 +24,41 @@ function QRPlaceholder({ label }) {
   )
 }
 
+// ── Field must live OUTSIDE CheckoutPage to prevent re-mount on every render ──
+function Field({ label, name, type = 'text', placeholder, textarea, value, onChange, error }) {
+  return (
+    <div>
+      <label className="font-sans font-medium text-charcoal text-sm block mb-1.5">
+        {label}
+      </label>
+      {textarea ? (
+        <textarea
+          rows={3}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          className="input-field resize-none"
+        />
+      ) : (
+        <input
+          type={type}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          className={`input-field ${error ? 'border-red-300' : ''}`}
+        />
+      )}
+      {error && (
+        <p className="font-mono text-xs text-red-500 mt-1">{error}</p>
+      )}
+    </div>
+  )
+}
+
 export default function CheckoutPage() {
   const { items, clearCart } = useCartStore()
   const subtotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0)
-  const shipping = subtotal >= 15 ? 0 : 3
+  const shipping = subtotal >= 10 ? 0 : 1
   const total = subtotal + shipping
 
   const [step, setStep] = useState('form') // 'form' | 'payment' | 'confirm'
@@ -62,33 +93,7 @@ export default function CheckoutPage() {
     clearCart()
   }
 
-  const Field = ({ label, name, type = 'text', placeholder, textarea }) => (
-    <div>
-      <label className="font-sans font-medium text-charcoal text-sm block mb-1.5">
-        {label}
-      </label>
-      {textarea ? (
-        <textarea
-          rows={3}
-          placeholder={placeholder}
-          value={form[name]}
-          onChange={e => setForm(f => ({ ...f, [name]: e.target.value }))}
-          className="input-field resize-none"
-        />
-      ) : (
-        <input
-          type={type}
-          placeholder={placeholder}
-          value={form[name]}
-          onChange={e => setForm(f => ({ ...f, [name]: e.target.value }))}
-          className={`input-field ${errors[name] ? 'border-red-300' : ''}`}
-        />
-      )}
-      {errors[name] && (
-        <p className="font-mono text-xs text-red-500 mt-1">{errors[name]}</p>
-      )}
-    </div>
-  )
+  const handleChange = (name) => (e) => setForm(f => ({ ...f, [name]: e.target.value }))
 
   // ── CONFIRMATION SCREEN ────────────────────────────────────
   if (step === 'confirm') {
@@ -128,7 +133,7 @@ export default function CheckoutPage() {
                   `Send $${total.toFixed(2)} via ${payMethod === 'paynow' ? 'PayNow' : 'PayLah!'}`,
                   `Screenshot your payment receipt`,
                   `DM us on Instagram or Telegram with your receipt + order ref: ${orderRef}`,
-                  `We'll confirm and ship within 3–5 working days 🚀`,
+                  `We'll confirm and ship within 2–4 working days 🚀`,
                 ].map((step, i) => (
                   <li key={i} className="flex items-start gap-3 font-sans text-sm text-warm-gray">
                     <span className="font-mono text-xs bg-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5 text-charcoal">
@@ -167,9 +172,8 @@ export default function CheckoutPage() {
                 return (
                   <div key={s} className="flex items-center gap-3">
                     <div className={`flex items-center gap-2 ${i <= current ? 'text-charcoal' : 'text-warm-gray'}`}>
-                      <span className={`w-7 h-7 rounded-full font-mono text-xs flex items-center justify-center font-bold ${
-                        i < current ? 'bg-sage text-white' : i === current ? 'bg-charcoal text-cream' : 'bg-light-gray text-warm-gray'
-                      }`}>
+                      <span className={`w-7 h-7 rounded-full font-mono text-xs flex items-center justify-center font-bold ${i < current ? 'bg-sage text-white' : i === current ? 'bg-charcoal text-cream' : 'bg-light-gray text-warm-gray'
+                        }`}>
                         {i < current ? '✓' : i + 1}
                       </span>
                       <span className="font-sans font-medium text-sm">{s}</span>
@@ -192,20 +196,48 @@ export default function CheckoutPage() {
                 >
                   <h2 className="font-display font-bold text-2xl text-charcoal">Your Details</h2>
 
-                  <Field label="Full Name" name="name" placeholder="Jane Tan" />
-                  <Field label="Phone Number" name="phone" type="tel" placeholder="+65 9123 4567" />
-                  <Field label="Email Address" name="email" type="email" placeholder="jane@email.com" />
+                  <Field
+                    label="Full Name"
+                    name="name"
+                    placeholder="Chris"
+                    value={form.name}
+                    onChange={handleChange('name')}
+                    error={errors.name}
+                  />
+                  <Field
+                    label="Phone Number"
+                    name="phone"
+                    type="tel"
+                    placeholder="9123 4567"
+                    value={form.phone}
+                    onChange={handleChange('phone')}
+                    error={errors.phone}
+                  />
+                  <Field
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    placeholder="Chris@email.com"
+                    value={form.email}
+                    onChange={handleChange('email')}
+                    error={errors.email}
+                  />
                   <Field
                     label="Delivery Address"
                     name="address"
                     textarea
                     placeholder="Blk 123 Yishun Ave 1, #05-678, Singapore 760123"
+                    value={form.address}
+                    onChange={handleChange('address')}
+                    error={errors.address}
                   />
                   <Field
                     label="Notes / Special Requests (Optional)"
                     name="notes"
                     textarea
                     placeholder="Any special instructions? Let us know!"
+                    value={form.notes}
+                    onChange={handleChange('notes')}
                   />
 
                   <motion.button
@@ -248,11 +280,10 @@ export default function CheckoutPage() {
                         <button
                           key={m.id}
                           onClick={() => setPayMethod(m.id)}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                            payMethod === m.id
+                          className={`p-4 rounded-2xl border-2 text-left transition-all ${payMethod === m.id
                               ? 'border-charcoal bg-charcoal/5'
                               : 'border-light-gray bg-white hover:border-charcoal/20'
-                          }`}
+                            }`}
                         >
                           <span className="text-2xl block mb-2">{m.emoji}</span>
                           <p className="font-sans font-semibold text-charcoal text-sm">{m.label}</p>
@@ -311,7 +342,22 @@ export default function CheckoutPage() {
 
               {items.length === 0 ? (
                 <div className="text-center py-8">
-                  <span className="text-4xl">🛍️</span>
+                  <svg
+                    className="mx-auto"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <path d="M16 10a4 4 0 01-8 0" />
+                  </svg>
+
                   <p className="font-sans text-warm-gray text-sm mt-2">Your cart is empty</p>
                   <Link to="/shop" className="btn-primary text-sm mt-4 inline-flex">
                     Shop now
@@ -357,7 +403,7 @@ export default function CheckoutPage() {
                     </div>
                     {shipping > 0 && (
                       <p className="font-mono text-[10px] text-warm-gray">
-                        Free shipping on orders over $15
+                        Free shipping on orders above $10
                       </p>
                     )}
                     <div className="flex justify-between font-sans font-bold text-charcoal text-base pt-2 border-t border-light-gray">
@@ -366,10 +412,25 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 bg-white rounded-2xl p-3 flex items-center gap-2">
-                    <span className="text-xl">📦</span>
+                  {/* Estimated delivery — SVG truck icon instead of emoji */}
+                  <div className="mt-4 bg-white rounded-2xl p-3 flex items-center gap-2.5">
+                    <svg
+                      width="18" height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-warm-gray flex-shrink-0"
+                    >
+                      <rect x="1" y="3" width="15" height="13" />
+                      <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                      <circle cx="5.5" cy="18.5" r="2.5" />
+                      <circle cx="18.5" cy="18.5" r="2.5" />
+                    </svg>
                     <p className="font-mono text-xs text-warm-gray">
-                      Estimated delivery: 3–5 working days
+                      Estimated delivery: 2–4 working days
                     </p>
                   </div>
                 </>

@@ -10,46 +10,26 @@ import { Link } from 'react-router-dom'
 export default function ShopPage() {
   const [search, setSearch] = useState('')
   const [activeSeries, setActiveSeries] = useState(null)
-  const [sort, setSort] = useState('newest')
 
   const filtered = useMemo(() => {
     let list = [...PRODUCTS]
 
-    // Search
     if (search.trim()) {
       const q = search.toLowerCase()
       list = list.filter(
         p =>
           p.name.toLowerCase().includes(q) ||
           p.seriesName.toLowerCase().includes(q) ||
-          p.tags.some(t => t.includes(q)) ||
           p.description.toLowerCase().includes(q)
       )
     }
 
-    // Series filter
     if (activeSeries) {
       list = list.filter(p => p.series === activeSeries)
     }
 
-    // Sort
-    switch (sort) {
-      case 'popular':
-        list = list.filter(p => p.popular).concat(list.filter(p => !p.popular))
-        break
-      case 'newest':
-        list = list.filter(p => p.newArrival).concat(list.filter(p => !p.newArrival))
-        break
-      case 'price-asc':
-        list.sort((a, b) => a.price - b.price)
-        break
-      case 'price-desc':
-        list.sort((a, b) => b.price - a.price)
-        break
-    }
-
     return list
-  }, [search, activeSeries, sort])
+  }, [search, activeSeries])
 
   return (
     <div className="section-pad">
@@ -68,8 +48,6 @@ export default function ShopPage() {
             setSearch={setSearch}
             activeSeries={activeSeries}
             setActiveSeries={setActiveSeries}
-            sort={sort}
-            setSort={setSort}
           />
         </div>
 

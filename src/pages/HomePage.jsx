@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { getFeaturedProducts, getNewArrivals, getProductsBySeries, SERIES } from '../data/products'
+import { getProductsBySeries, SERIES } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import CollectionCard from '../components/CollectionCard'
 import SectionHeader from '../components/SectionHeader'
@@ -58,12 +58,11 @@ function FloatingSticker({ src, duration = 4, className }) {
 }
 
 export default function HomePage() {
-  // Random pick from each series on every page load
-  const featured = SERIES.map(s => {
+  // One random pick from each non-custom series on every page load
+  const featured = SERIES.filter(s => s.id !== 'custom').map(s => {
     const seriesProducts = getProductsBySeries(s.id)
     return seriesProducts[Math.floor(Math.random() * seriesProducts.length)]
   }).filter(Boolean)
-  const newArrivals = getNewArrivals().slice(0, 4)
 
   return (
     <div>
@@ -182,7 +181,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="font-sans text-sm text-warm-gray">
-                  <strong className="text-charcoal">4 series</strong> · 26 stickers
+                  <strong className="text-charcoal">4 series</strong> · 16 stickers · loved by chaotic people
                 </p>
               </div>
             </FadeUp>

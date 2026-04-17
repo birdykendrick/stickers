@@ -7,7 +7,6 @@ import { showToast } from './Toast'
 export default function ProductCard({ product, delay = 0 }) {
   const { addItem, updateQuantity, items } = useCartStore()
 
-  // Derive quantity directly from cart store so it stays in sync
   const cartKey = `${product.id}-${product.sizes?.[0] || 'Standard'}`
   const cartItem = items.find(i => i.key === cartKey)
   const qty = cartItem?.quantity ?? 0
@@ -25,6 +24,71 @@ export default function ProductCard({ product, delay = 0 }) {
     showToast(`${product.name} added!`, '🛒')
   }
 
+  // ── CUSTOM ENQUIRY CARD ───────────────────────────────────
+  if (product.id === 'custom-enquiry') {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4, delay, ease: 'easeOut' }}
+      >
+        <motion.div
+          whileHover={{ y: -3 }}
+          transition={{ duration: 0.2 }}
+          className="bg-peach/20 rounded-2xl overflow-hidden border-2 border-dashed border-peach/60 hover:border-peach hover:shadow-card transition-all duration-300 h-full"
+        >
+          {/* Text panel instead of image */}
+          <div className="aspect-square flex flex-col items-center justify-center text-center px-4 gap-3">
+            <div className="w-12 h-12 rounded-full bg-peach/40 flex items-center justify-center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+              </svg>
+            </div>
+            <p className="font-display font-bold text-charcoal text-base leading-tight">
+              Want a custom sticker?
+            </p>
+            <p className="font-sans text-warm-gray text-xs leading-relaxed">
+              Your pet, your character, your idea? We will draw it just for you! DM us after checkout!
+            </p>
+          </div>
+
+          {/* Info + stepper */}
+          <div className="px-3 py-3">
+            <p className="font-sans font-medium text-charcoal text-sm leading-snug">
+              Custom Order Enquiry
+            </p>
+            <p className="font-mono text-xs text-warm-gray mt-0.5">
+              Free to enquire ✦
+            </p>
+            <div
+              className="flex items-center justify-between mt-3 bg-white rounded-xl overflow-hidden border border-peach/30"
+              onClick={e => e.preventDefault()}
+            >
+              <button
+                onClick={handleDecrement}
+                disabled={qty === 0}
+                className="w-9 h-9 flex items-center justify-center text-warm-gray hover:text-charcoal disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium text-base"
+              >
+                −
+              </button>
+              <span className="font-mono text-sm text-charcoal font-medium min-w-[1.5rem] text-center">
+                {qty}
+              </span>
+              <button
+                onClick={handleIncrement}
+                className="w-9 h-9 flex items-center justify-center text-warm-gray hover:text-charcoal transition-colors font-medium text-base"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    )
+  }
+
+  // ── REGULAR PRODUCT CARD ──────────────────────────────────
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -66,7 +130,6 @@ export default function ProductCard({ product, delay = 0 }) {
               ${product.price.toFixed(2)}
             </p>
 
-            {/* Quantity stepper — reads from cart store, always in sync */}
             <div
               className="flex items-center justify-between mt-3 bg-parchment rounded-xl overflow-hidden border border-light-gray"
               onClick={e => e.preventDefault()}

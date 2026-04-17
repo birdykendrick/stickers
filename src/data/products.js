@@ -14,6 +14,7 @@ import sleepingduck from '../assets/ducks/sleepingduck.png'
 import sunglassduck from '../assets/ducks/sunglassduck.png'
 import swingingduck from '../assets/ducks/swingingduck.png'
 import unproducktive from '../assets/ducks/unproducktive.png'
+import sideeye from '../assets/ducks/sideeyeduck.png'
 
 // Otter Series
 import bbtcup from '../assets/otter/bbtcup.png'
@@ -23,20 +24,15 @@ import rushing from '../assets/otter/rushing.png'
 import sleepyotter from '../assets/otter/sleepyotter.png'
 import otterThumbsup from '../assets/otter/thumbsup.png'
 
-// Telegram Duck Series
-import cool from '../assets/teleduck/cool.png'
-import crosshands from '../assets/teleduck/crosshands.png'
-import imokay from '../assets/teleduck/imokay.png'
-import mindblown from '../assets/teleduck/mindblown.png'
-import shocked from '../assets/teleduck/shocked.png'
-import sleeping from '../assets/teleduck/sleeping.png'
-import thinking from '../assets/teleduck/thinking.png'
-import teleduckThumbsup from '../assets/teleduck/thumbsup.png'
-
 // Mini Series (withoutseries folder)
-import blahaj from '../assets/withoutseries/BLÅHAJ.png'
+import blahaj from '../assets/withoutseries/BLAHAJ.png'
 import dragon from '../assets/withoutseries/dragon.png'
 import dumdog from '../assets/withoutseries/dumdog.png'
+import workingshark from '../assets/withoutseries/workingshark.png'
+
+// Custom Orders
+import corgis from '../assets/customorders/corgis.png'
+import poodle from '../assets/customorders/poodle.png'
 
 // ── SERIES ────────────────────────────────────────────────────
 
@@ -45,34 +41,23 @@ export const SERIES = [
     id: 'duck',
     name: 'Duck Series',
     slug: 'duck',
-    description: 'Dark silhouette ducks living their most relatable lives. Bare minimum energy only.',
+    description: 'Dark ducks living their most relatable lives. Bare minimum energy only.',
     color: 'charcoal',
     bgColor: '#F5F0E8',
     accentColor: '#E8C87A',
     coverImage: sleepingduck,
-    tagline: 'Doing the bare minimum. Respectfully.',
+    tagline: 'Doing the bare minimum. Literally',
   },
   {
     id: 'otter',
     name: 'Otter Series',
     slug: 'otter',
-    description: 'Chubby otters with big feelings and bigger personalities. Sian but still cute.',
+    description: 'Chubby otters with big feelings and bigger personalities.',
     color: 'brown',
     bgColor: '#F5EDE0',
     accentColor: '#C4956A',
     coverImage: otterThumbsup,
-    tagline: 'Soft on the outside, sian on the inside.',
-  },
-  {
-    id: 'teleduck',
-    name: 'Telegram Duck',
-    slug: 'teleduck',
-    description: 'The classic glowy rubber duck, now with all your favourite Telegram emotions.',
-    color: 'butter',
-    bgColor: '#FFFBEA',
-    accentColor: '#FFD84D',
-    coverImage: imokay,
-    tagline: 'Every mood. One duck.',
+    tagline: 'Soft fur. Shag energy.',
   },
   {
     id: 'mini',
@@ -83,8 +68,19 @@ export const SERIES = [
     bgColor: '#EEF5EE',
     accentColor: '#A8C4B0',
     coverImage: dumdog,
-    tagline: 'Standalone. Iconic. No notes.',
+    tagline: 'Wat the dog doin?',
   },
+  {
+  id: 'custom',
+  name: 'Custom Orders',
+  slug: 'custom',
+  description: 'Got a pet, a character, or an idea? We bring it to life as a sticker, just for you.',
+  color: 'peach',
+  bgColor: '#FFF0E6',
+  accentColor: '#F5C8A8',
+  coverImage: corgis,
+  tagline: 'Your idea. Our art.',
+},
 ]
 
 // ── SHARED SIZES ──────────────────────────────────────────────
@@ -191,7 +187,7 @@ export const PRODUCTS = [
   },
   {
     id: 'duck-007',
-    name: 'Sunglass Duck',
+    name: 'Sunglasses Duck',
     slug: 'sunglass-duck',
     price: 1.50,
     series: 'duck',
@@ -228,6 +224,21 @@ export const PRODUCTS = [
     seriesName: 'Duck Series',
     imageUrl: unproducktive,
     description: "Nothing is happening and that's fine.",
+    featured: false,
+    newArrival: false,
+    popular: false,
+    sizeOptions: SIZES,
+    color: '#F5F0E8',
+  },
+    {
+    id: 'duck-010',
+    name: 'Side-eye Duck',
+    slug: 'side-eye-duck',
+    price: 1.50,
+    series: 'duck',
+    seriesName: 'Duck Series',
+    imageUrl: sideeye,
+    description: "Sussing",
     featured: false,
     newArrival: false,
     popular: false,
@@ -326,128 +337,7 @@ export const PRODUCTS = [
     sizeOptions: SIZES,
     color: '#F5EDE0',
   },
-
-  // ── TELEGRAM DUCK SERIES ──────────────────────────────────
-  {
-    id: 'teleduck-001',
-    name: 'Cool Duck',
-    slug: 'cool-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: cool,
-    description: 'Just vibes. Absolute icon.',
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#FFFBEA',
-  },
-  {
-    id: 'teleduck-002',
-    name: 'Cross Hands Duck',
-    slug: 'cross-hands-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: crosshands,
-    description: 'Arms folded. Eyes closed. Send this to anyone who tests you.',
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#FFFBEA',
-  },
-  {
-    id: 'teleduck-003',
-    name: "I'm Okay Duck",
-    slug: 'imokay-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: imokay,
-    description: "It's not okay. We're not okay.",
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#F0EAF8',
-  },
-  {
-    id: 'teleduck-004',
-    name: 'Mind Blown Duck',
-    slug: 'mindblown-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: mindblown,
-    description: 'Exploding duck',
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#FFFBEA',
-  },
-  {
-    id: 'teleduck-005',
-    name: 'Shocked Duck',
-    slug: 'shocked-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: shocked,
-    description: 'The face you make when you realise how expensive you are',
-    featured: true,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#FFFBEA',
-  },
-  {
-    id: 'teleduck-006',
-    name: 'Sleeping Duck',
-    slug: 'sleeping-teleduck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: sleeping,
-    description: "Absolutely do not disturb.",
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#EAF5EA',
-  },
-  {
-    id: 'teleduck-007',
-    name: 'Thinking Duck',
-    slug: 'thinking-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: thinking,
-    description: 'This duck is done with your shit.',
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#FFFBEA',
-  },
-  {
-    id: 'teleduck-008',
-    name: 'Thumbs Up Duck',
-    slug: 'thumbsup-duck',
-    price: 1.50,
-    series: 'teleduck',
-    seriesName: 'Telegram Duck',
-    imageUrl: teleduckThumbsup,
-    description: 'Approves of your life choices. Mostly...',
-    featured: false,
-    newArrival: false,
-    popular: false,
-    sizeOptions: SIZES,
-    color: '#FFFBEA',
-  },
+  
 
   // ── MINI SERIES ───────────────────────────────────────────
   {
@@ -488,13 +378,73 @@ export const PRODUCTS = [
     series: 'mini',
     seriesName: 'Mini Series',
     imageUrl: dumdog,
-    description: 'Chubby Dum Pug',
+    description: 'Wat the dog doin?',
     featured: true,
     newArrival: false,
     popular: false,
     sizeOptions: SIZES,
     color: '#F5EDE0',
   },
+  {
+    id: 'mini-004',
+    name: 'Working Shark',
+    price: 1.50,
+    series: 'mini',
+    seriesName: 'Mini Series',
+    imageUrl: workingshark,
+    description: 'Shark studying',
+    featured: true,
+    newArrival: false,
+    popular: false,
+    sizeOptions: SIZES,
+    color: '#F5EDE0',
+  },
+// ── CUSTOM ORDERS ─────────────────────────────────────────
+{
+  id: 'custom-001',
+  name: 'Corgi Sticker',
+  slug: 'corgi-sticker',
+  price: 2.50,
+  series: 'custom',
+  seriesName: 'Custom Orders',
+  imageUrl: corgis,
+  description: 'A custom corgi sticker made just for a customer. Want your pet immortalised? DM us!',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: [{ label: '4 × 4 cm', price: 2.50 }],
+  color: '#FFF0E6',
+},
+{
+  id: 'custom-002',
+  name: 'Poodle Sticker',
+  slug: 'poodle-sticker',
+  price: 2.50,
+  series: 'custom',
+  seriesName: 'Custom Orders',
+  imageUrl: poodle,
+  description: 'A custom poodle sticker made just for a customer. Want your pet immortalised? DM us!',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: [{ label: '4 × 4 cm', price: 2.50 }],
+  color: '#FFF0E6',
+},
+{
+  id: 'custom-enquiry',
+  name: 'Custom Order Enquiry',
+  slug: 'custom-enquiry',
+  price: 0,
+  series: 'custom',
+  seriesName: 'Custom Orders',
+  imageUrl: corgis,
+  description: 'Want a sticker of your pet, character, or anything you can imagine? We draw it just for you! Add this to your cart and DM us on WhatsApp after checkout.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: [{ label: '4 × 4 cm', price: 0 }],
+  color: '#FFF0E6',
+},
 ]
 
 // ── HELPERS ───────────────────────────────────────────────────
