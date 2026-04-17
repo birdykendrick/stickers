@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { getProductsBySeries, SERIES } from '../data/products'
+import { PRODUCTS, getFeaturedProducts, getNewArrivals, getProductsBySeries, SERIES } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import CollectionCard from '../components/CollectionCard'
 import SectionHeader from '../components/SectionHeader'
@@ -58,11 +58,9 @@ function FloatingSticker({ src, duration = 4, className }) {
 }
 
 export default function HomePage() {
-  // One random pick from each non-custom series on every page load
-  const featured = SERIES.filter(s => s.id !== 'custom').map(s => {
-    const seriesProducts = getProductsBySeries(s.id)
-    return seriesProducts[Math.floor(Math.random() * seriesProducts.length)]
-  }).filter(Boolean)
+  const allProducts = PRODUCTS.filter(p => p.series !== 'custom')
+  const featured = [...allProducts].sort(() => Math.random() - 0.5).slice(0, 4)
+  const newArrivals = getNewArrivals().slice(0, 4)
 
   return (
     <div>
@@ -214,18 +212,39 @@ export default function HomePage() {
       </section>
 
       {/* ── SHOP BY SERIES ───────────────────────────────────── */}
-      <section className="section-pad bg-cream">
+      <section className="section-pad bg-cream overflow-hidden">
         <div className="container-max">
           <SectionHeader
             tag="Collections"
             title="Shop by Series"
             subtitle="Every series is its own little universe of chaos and cuteness."
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {SERIES.map((series, i) => (
-              <CollectionCard key={series.id} series={series} delay={i * 0.08} />
+        </div>
+
+        {/* Marquee — loops right to left */}
+        <div className="relative w-full overflow-hidden py-4">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
+
+          <motion.div
+            className="flex gap-5 items-stretch"
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          >
+            {/* Duplicate all series for seamless loop */}
+            {[...SERIES, ...SERIES].map((series, i) => (
+              <div key={`${series.id}-${i}`} className="flex-shrink-0 w-64">
+                <CollectionCard series={series} delay={0} />
+              </div>
             ))}
-          </div>
+          </motion.div>
+        </div>
+
+        <div className="container-max mt-2 flex justify-center">
+          <Link to="/collections" className="btn-secondary text-sm">
+            View all collections →
+          </Link>
         </div>
       </section>
 

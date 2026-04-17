@@ -30,6 +30,16 @@ import dragon from '../assets/withoutseries/dragon.png'
 import dumdog from '../assets/withoutseries/dumdog.png'
 import workingshark from '../assets/withoutseries/workingshark.png'
 
+// Food Series
+import panda from '../assets/foodseries/panda.png'
+import pig from '../assets/foodseries/pig.png'
+import teddybear from '../assets/foodseries/teddy bear.png'
+import sushi from '../assets/foodseries/sushi.png'
+import pizza from '../assets/foodseries/pizza.png'
+import dino from '../assets/foodseries/dino.png'
+import shark from '../assets/foodseries/shark.png'
+import donut from '../assets/foodseries/donut.png'
+
 // Custom Orders
 import corgis from '../assets/customorders/corgis.png'
 import poodle from '../assets/customorders/poodle.png'
@@ -46,7 +56,7 @@ export const SERIES = [
     bgColor: '#F5F0E8',
     accentColor: '#E8C87A',
     coverImage: sleepingduck,
-    tagline: 'Doing the bare minimum. Literally',
+    tagline: 'Trying my least. Literally',
   },
   {
     id: 'otter',
@@ -70,6 +80,17 @@ export const SERIES = [
     coverImage: dumdog,
     tagline: 'Wat the dog doin?',
   },
+  {
+  id: 'food',
+  name: 'Food Series',
+  slug: 'food',
+  description: 'Ducks dressed up as your favourite foods. Chaotic, cute, and very hungry.',
+  color: 'peach',
+  bgColor: '#FFF0E6',
+  accentColor: '#F5C8A8',
+  coverImage: panda,
+  tagline: 'You are what you eat.',
+},
   {
   id: 'custom',
   name: 'Custom Orders',
@@ -399,6 +420,128 @@ export const PRODUCTS = [
     sizeOptions: SIZES,
     color: '#F5EDE0',
   },
+
+  // ── FOOD SERIES ───────────────────────────────────────────
+{
+  id: 'food-001',
+  name: 'Panda Duck',
+  slug: 'panda-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: panda,
+  description: 'A duck dressed as a panda. Identity crisis never looked this cute.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#F5F5F5',
+},
+{
+  id: 'food-002',
+  name: 'Pig Duck',
+  slug: 'pig-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: pig,
+  description: 'Pink onesie, full commitment. This duck said oink and meant it.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#FFE8F0',
+},
+{
+  id: 'food-003',
+  name: 'Teddy Bear Duck',
+  slug: 'teddy-bear-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: teddybear,
+  description: 'Soft, squishy, and dressed as a teddy. The ultimate comfort sticker.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#F5EDE0',
+},
+{
+  id: 'food-004',
+  name: 'Sushi Duck',
+  slug: 'sushi-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: sushi,
+  description: 'Duck dressed as a sushi roll. Fresh, iconic, and ready to be eaten.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#FFF8E1',
+},
+{
+  id: 'food-005',
+  name: 'Pizza Duck',
+  slug: 'pizza-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: pizza,
+  description: 'A duck. In a pizza costume. No further explanation needed.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#FFF3E0',
+},
+{
+  id: 'food-006',
+  name: 'Dino Duck',
+  slug: 'dino-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: dino,
+  description: 'Rawr. Duck gone prehistoric. Tiny arms, big energy.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#E8F5E9',
+},
+{
+  id: 'food-007',
+  name: 'Shark Duck',
+  slug: 'shark-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: shark,
+  description: 'Do do do do do do. Duck in a shark suit. Absolutely menacing.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#E0F0FA',
+},
+{
+  id: 'food-008',
+  name: 'Donut Duck',
+  slug: 'donut-duck',
+  price: 1.50,
+  series: 'food',
+  seriesName: 'Food Series',
+  imageUrl: donut,
+  description: 'Sweet, round, and a little hole-y. The donut duck has no regrets.',
+  featured: false,
+  newArrival: false,
+  popular: false,
+  sizeOptions: SIZES,
+  color: '#FFF0F5',
+},
 // ── CUSTOM ORDERS ─────────────────────────────────────────
 {
   id: 'custom-001',
