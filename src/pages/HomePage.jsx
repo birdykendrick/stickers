@@ -1,7 +1,6 @@
-import { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { PRODUCTS, getFeaturedProducts, getNewArrivals, getProductsBySeries, SERIES } from '../data/products'
+import { PRODUCTS, getNewArrivals, SERIES } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import CollectionCard from '../components/CollectionCard'
 import SectionHeader from '../components/SectionHeader'
@@ -65,54 +64,6 @@ export default function HomePage() {
 
   const seriesCount = 5
   const stickerCount = 30
-
-  // ── Marquee scroll ───────────────────────────────────────
-  const marqueeRef = useRef(null)
-
-  useEffect(() => {
-    const el = marqueeRef.current
-    if (!el) return
-
-    let frame
-    let pos = 0
-    let isDragging = false
-
-    function tick() {
-      if (!isDragging) {
-        pos += 0.4
-        const halfWidth = el.scrollWidth / 2
-        if (pos >= halfWidth) pos = 0
-        el.scrollLeft = pos
-      }
-      frame = requestAnimationFrame(tick)
-    }
-
-    // iOS needs a delay + forced layout before scrollLeft works
-    const timer = setTimeout(() => {
-      el.scrollLeft = 0
-      pos = 0
-      frame = requestAnimationFrame(tick)
-    }, 500)
-
-    function onMouseDown() { isDragging = true }
-    function onMouseUp() { isDragging = false; pos = el.scrollLeft }
-    function onTouchStart() { isDragging = true }
-    function onTouchEnd() { isDragging = false; pos = el.scrollLeft }
-
-    el.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mouseup', onMouseUp)
-    el.addEventListener('touchstart', onTouchStart, { passive: true })
-    el.addEventListener('touchend', onTouchEnd, { passive: true })
-
-    return () => {
-      cancelAnimationFrame(frame)
-      clearTimeout(timer)
-      el.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mouseup', onMouseUp)
-      el.removeEventListener('touchstart', onTouchStart)
-      el.removeEventListener('touchend', onTouchEnd)
-    }
-  }, [])
 
   return (
     <div>
@@ -179,14 +130,12 @@ export default function HomePage() {
 
         <div className="container-max section-pad relative z-10">
           <div className="max-w-2xl">
-            {/* Label */}
             <FadeUp>
               <span className="tag bg-peach-light text-charcoal font-mono uppercase tracking-widest text-xs">
                 ✦ home-based sticker shop
               </span>
             </FadeUp>
 
-            {/* Headline */}
             <FadeUp delay={0.1}>
               <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-7xl text-charcoal leading-[1.05] mt-5">
                 Cute stickers,
@@ -195,7 +144,6 @@ export default function HomePage() {
               </h1>
             </FadeUp>
 
-            {/* Subheading */}
             <FadeUp delay={0.2}>
               <p className="font-sans text-warm-gray text-lg md:text-xl mt-6 leading-relaxed max-w-lg">
                 Cute little chaos for the things you carry around. <br />
@@ -203,7 +151,6 @@ export default function HomePage() {
               </p>
             </FadeUp>
 
-            {/* CTAs */}
             <FadeUp delay={0.3}>
               <div className="flex flex-wrap gap-3 mt-8">
                 <Link to="/shop" className="btn-primary text-base px-7 py-3.5">
@@ -215,7 +162,6 @@ export default function HomePage() {
               </div>
             </FadeUp>
 
-            {/* Social proof */}
             <FadeUp delay={0.4}>
               <div className="flex items-center gap-4 mt-10">
                 <div className="flex -space-x-2">
@@ -262,7 +208,7 @@ export default function HomePage() {
       </section>
 
       {/* ── SHOP BY SERIES ───────────────────────────────────── */}
-      <section className="section-pad bg-cream overflow-hidden">
+      <section className="section-pad bg-cream">
         <div className="container-max">
           <SectionHeader
             tag="Collections"
@@ -271,14 +217,24 @@ export default function HomePage() {
           />
         </div>
 
+        {/* Pure CSS marquee — works on all browsers including iPhone */}
         <div className="relative w-full py-8 overflow-hidden">
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
 
-          <div className="flex gap-5 w-max animate-marquee">
+          {/* Marquee track — duplicated for seamless loop */}
+          <div
+            className="animate-marquee"
+            style={{
+              display: 'flex',
+              gap: '20px',
+              width: 'max-content',
+              willChange: 'transform',
+            }}
+          >
             {[...SERIES, ...SERIES].map((series, i) => (
-              <div key={`${series.id}-${i}`} className="w-56">
+              <div key={`${series.id}-${i}`} style={{ width: '220px', flexShrink: 0 }}>
                 <CollectionCard series={series} delay={0} />
               </div>
             ))}
