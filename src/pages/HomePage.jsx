@@ -1,6 +1,7 @@
+import { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { PRODUCTS, getNewArrivals, SERIES } from '../data/products'
+import { PRODUCTS, getFeaturedProducts, getNewArrivals, getProductsBySeries, SERIES } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import CollectionCard from '../components/CollectionCard'
 import SectionHeader from '../components/SectionHeader'
@@ -57,40 +58,6 @@ function FloatingSticker({ src, duration = 4, className }) {
   )
 }
 
-// ── Marquee CSS (desktop only) ───────────────────────────────
-const marqueeStyles = `
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  .marquee-track {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: max-content;
-    will-change: transform;
-    animation: marquee 30s linear infinite;
-  }
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-  /* On mobile: disable animation, use native scroll instead */
-  @media (max-width: 767px) {
-    .marquee-track {
-      animation: none !important;
-      width: auto !important;
-    }
-    .marquee-mobile-scroll {
-      overflow-x: auto !important;
-      -webkit-overflow-scrolling: touch;
-    }
-    /* Hide the duplicate set of cards on mobile */
-    .marquee-duplicate {
-      display: none !important;
-    }
-  }
-`
-
 export default function HomePage() {
   const allProducts = PRODUCTS.filter(p => p.series !== 'custom')
   const featured = [...allProducts].sort(() => Math.random() - 0.5).slice(0, 4)
@@ -99,42 +66,127 @@ export default function HomePage() {
   const seriesCount = 5
   const stickerCount = 30
 
+  // ── Marquee scroll ───────────────────────────────────────
+  const marqueeRef = useRef(null)
+
+  useEffect(() => {
+    const el = marqueeRef.current
+    if (!el) return
+
+    let frame
+    let pos = 0
+    let isDragging = false
+
+    function tick() {
+      if (!isDragging) {
+        pos += 0.4
+        const halfWidth = el.scrollWidth / 2
+        if (pos >= halfWidth) pos = 0
+        el.scrollLeft = pos
+      }
+      frame = requestAnimationFrame(tick)
+    }
+
+    // iOS needs a delay + forced layout before scrollLeft works
+    const timer = setTimeout(() => {
+      el.scrollLeft = 0
+      pos = 0
+      frame = requestAnimationFrame(tick)
+    }, 500)
+
+    function onMouseDown() { isDragging = true }
+    function onMouseUp() { isDragging = false; pos = el.scrollLeft }
+    function onTouchStart() { isDragging = true }
+    function onTouchEnd() { isDragging = false; pos = el.scrollLeft }
+
+    el.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mouseup', onMouseUp)
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(frame)
+      clearTimeout(timer)
+      el.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mouseup', onMouseUp)
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [])
+
   return (
     <div>
-      <style>{marqueeStyles}</style>
-
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="relative min-h-[100vh] sm:min-h-[90vh] flex items-center overflow-hidden bg-cream">
+        {/* Decorative blobs */}
         <div className="absolute top-20 right-10 w-72 h-72 bg-peach/20 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-56 h-56 bg-butter/30 rounded-full blur-2xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blush/10 rounded-full blur-3xl" />
 
+        {/* thinkingDuck — top right */}
         <FloatingSticker src={thinkingDuckImg} duration={3.8}
-          className="w-[110px] top-[6%] right-[4%] sm:w-[120px] sm:top-[8%] sm:right-[6%] md:w-[155px] md:top-[10%] md:right-[17%] opacity-95 z-0"
+          className="
+            w-[110px]  top-[6%]  right-[4%]
+            sm:w-[120px] sm:top-[8%]  sm:right-[6%]
+            md:w-[155px] md:top-[10%] md:right-[17%]
+            opacity-95 z-0"
         />
+
+        {/* duck — middle right */}
         <FloatingSticker src={duckImg} duration={4.6}
-          className="w-[90px] top-[35%] right-[2%] sm:w-[110px] sm:top-[38%] sm:right-[3%] md:w-[150px] md:top-[42%] md:right-[5%] opacity-85 z-0"
+          className="
+            w-[90px]  top-[35%] right-[2%]
+            sm:w-[110px] sm:top-[38%] sm:right-[3%]
+            md:w-[150px] md:top-[42%] md:right-[5%]
+            opacity-85 z-0"
         />
+
+        {/* sleepingDuck — bottom right */}
         <FloatingSticker src={sleepingDuckImg} duration={5.1}
-          className="w-[95px] bottom-[7%] right-[6%] sm:w-[115px] sm:bottom-[10%] sm:right-[7%] md:w-[158px] md:bottom-[10%] md:right-[12%] opacity-90 z-0"
+          className="
+            w-[95px]  bottom-[7%]  right-[6%]
+            sm:w-[115px] sm:bottom-[10%] sm:right-[7%]
+            md:w-[158px] md:bottom-[10%]  md:right-[12%]
+            opacity-90 z-0"
         />
+
+        {/* dog — top left */}
         <FloatingSticker src={dogImg} duration={4.2}
-          className="w-[85px] top-[2%] left-[8%] sm:w-[110px] sm:top-[8%] sm:left-[4%] md:w-[140px] md:top-[10%] md:left-[12.5%] opacity-85 z-0"
+          className="
+            w-[85px]  top-[2%]  left-[8%]
+            sm:w-[110px] sm:top-[8%]  sm:left-[4%]
+            md:w-[140px] md:top-[10%] md:left-[12.5%]
+            opacity-85 z-0"
         />
+
+        {/* otter — middle left */}
         <FloatingSticker src={otterImg} duration={3.5}
-          className="w-[0px] top-[38%] left-[2%] sm:w-[105px] sm:top-[40%] sm:left-[3%] md:w-[160px] md:top-[42%] md:left-[5%] opacity-80 z-0"
+          className="
+            w-[0px]  top-[38%] left-[2%]
+            sm:w-[105px] sm:top-[40%] sm:left-[3%]
+            md:w-[160px] md:top-[42%] md:left-[5%]
+            opacity-80 z-0"
         />
+
+        {/* sleepyOtter — bottom left */}
         <FloatingSticker src={sleepyOtterImg} duration={4.9}
-          className="w-[95px] bottom-[4.5%] left-[10%] sm:w-[115px] sm:bottom-[9%] sm:left-[5%] md:w-[170px] md:bottom-[10%] md:left-[15%] opacity-90 z-0"
+          className="
+            w-[95px]  bottom-[4.5%]  left-[10%]
+            sm:w-[115px] sm:bottom-[9%]  sm:left-[5%]
+            md:w-[170px] md:bottom-[10%]  md:left-[15%]
+            opacity-90 z-0"
         />
 
         <div className="container-max section-pad relative z-10">
           <div className="max-w-2xl">
+            {/* Label */}
             <FadeUp>
               <span className="tag bg-peach-light text-charcoal font-mono uppercase tracking-widest text-xs">
                 ✦ home-based sticker shop
               </span>
             </FadeUp>
+
+            {/* Headline */}
             <FadeUp delay={0.1}>
               <h1 className="font-display font-bold text-5xl sm:text-6xl md:text-7xl text-charcoal leading-[1.05] mt-5">
                 Cute stickers,
@@ -142,12 +194,16 @@ export default function HomePage() {
                 <em className="italic text-warm-gray font-normal">inspired by everyday life.</em>
               </h1>
             </FadeUp>
+
+            {/* Subheading */}
             <FadeUp delay={0.2}>
               <p className="font-sans text-warm-gray text-lg md:text-xl mt-6 leading-relaxed max-w-lg">
                 Cute little chaos for the things you carry around. <br />
                 Hand-drawn characters with way too many feelings.
               </p>
             </FadeUp>
+
+            {/* CTAs */}
             <FadeUp delay={0.3}>
               <div className="flex flex-wrap gap-3 mt-8">
                 <Link to="/shop" className="btn-primary text-base px-7 py-3.5">
@@ -158,11 +214,16 @@ export default function HomePage() {
                 </Link>
               </div>
             </FadeUp>
+
+            {/* Social proof */}
             <FadeUp delay={0.4}>
               <div className="flex items-center gap-4 mt-10">
                 <div className="flex -space-x-2">
                   {[duckImg, thinkingDuckImg, dogImg, otterImg, sleepingDuckImg, sleepyOtterImg].map((src, i) => (
-                    <span key={i} className="w-8 h-8 rounded-full bg-white shadow-soft flex items-center justify-center border-2 border-cream overflow-hidden">
+                    <span
+                      key={i}
+                      className="w-8 h-8 rounded-full bg-white shadow-soft flex items-center justify-center border-2 border-cream overflow-hidden"
+                    >
                       <img src={src} alt="" className="w-6 h-6 object-contain" />
                     </span>
                   ))}
@@ -201,7 +262,7 @@ export default function HomePage() {
       </section>
 
       {/* ── SHOP BY SERIES ───────────────────────────────────── */}
-      <section className="section-pad bg-cream">
+      <section className="section-pad bg-cream overflow-hidden">
         <div className="container-max">
           <SectionHeader
             tag="Collections"
@@ -210,33 +271,25 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Outer wrapper: overflow hidden on desktop, overflow-x scroll on mobile */}
-        <div
-          className="marquee-mobile-scroll"
-          style={{
-            position: 'relative',
-            width: '100%',
-            overflowX: 'hidden', // overridden to auto on mobile via CSS
-            overflowY: 'hidden',
-            paddingTop: '32px',
-            paddingBottom: '32px',
-          }}
-        >
-          {/* Fade edges — hidden on mobile since it's a scroll */}
-          <div className="hidden md:block" style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '64px', background: 'linear-gradient(to right, #FAF8F4, transparent)', zIndex: 10, pointerEvents: 'none' }} />
-          <div className="hidden md:block" style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '64px', background: 'linear-gradient(to left, #FAF8F4, transparent)', zIndex: 10, pointerEvents: 'none' }} />
+        {/* Scroll marquee */}
+        <div className="relative w-full py-8">
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
 
-          {/* Animated track */}
-          <div className="marquee-track" style={{ gap: '20px' }}>
-            {/* First set — shown on both mobile and desktop */}
-            {SERIES.map((series, i) => (
-              <div key={`${series.id}-a`} style={{ width: '200px', flexShrink: 0 }}>
-                <CollectionCard series={series} delay={0} />
-              </div>
-            ))}
-            {/* Duplicate set — only shown on desktop for seamless loop */}
-            {SERIES.map((series, i) => (
-              <div key={`${series.id}-b`} className="marquee-duplicate" style={{ width: '200px', flexShrink: 0 }}>
+          <div
+            ref={marqueeRef}
+            className="flex gap-5 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              scrollBehavior: 'auto',
+              height: '340px',
+              alignItems: 'center',
+              overflowY: 'hidden',
+            }}
+          >
+            {[...SERIES, ...SERIES].map((series, i) => (
+              <div key={`${series.id}-${i}`} className="flex-shrink-0 w-56 h-full">
                 <CollectionCard series={series} delay={0} />
               </div>
             ))}
