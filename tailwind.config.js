@@ -37,14 +37,20 @@ export default {
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',
+        'marquee': 'marquee 25s linear infinite',  // ← add this
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
         },
+        marquee: {                                  // ← add this
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
     },
   },
   plugins: [],
 }
+

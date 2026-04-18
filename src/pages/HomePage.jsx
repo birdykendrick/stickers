@@ -271,25 +271,14 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Scroll marquee */}
-        <div className="relative w-full py-8">
+        <div className="relative w-full py-8 overflow-hidden">
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
 
-          <div
-            ref={marqueeRef}
-            className="flex gap-5 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
-            style={{
-              WebkitOverflowScrolling: 'touch',
-              scrollBehavior: 'auto',
-              height: '340px',
-              alignItems: 'center',
-              overflowY: 'hidden',
-            }}
-          >
+          <div className="flex gap-5 w-max animate-marquee">
             {[...SERIES, ...SERIES].map((series, i) => (
-              <div key={`${series.id}-${i}`} className="flex-shrink-0 w-56 h-full">
+              <div key={`${series.id}-${i}`} className="w-56">
                 <CollectionCard series={series} delay={0} />
               </div>
             ))}
