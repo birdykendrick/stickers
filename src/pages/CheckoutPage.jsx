@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
 import StickerImage from '../components/StickerImage'
-import paynowImg from '../assets/paynow.PNG'
+import paynowImg from '../assets/paynow.png'
 import paylahImg from '../assets/paylah.png'
 
 function generateRef() {
