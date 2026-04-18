@@ -70,72 +70,58 @@ export default function HomePage() {
   const marqueeRef = useRef(null)
 
   useEffect(() => {
-    const el = marqueeRef.current
-    if (!el) return
+  const el = marqueeRef.current
+  if (!el) return
 
-    let frame
-    let isDragging = false
-    let pos = 0
-    let touchStartX = 0
-    let touchStartY = 0
+  let frame
+  let isDragging = false
+  let pos = 0
 
-    const start = () => {
-      const halfWidth = el.scrollWidth / 2
-      function tick() {
-        if (!isDragging) {
-          pos += 0.5
-          if (pos >= halfWidth) pos = 0
-          el.scrollLeft = pos
-        }
-        frame = requestAnimationFrame(tick)
-      }
-      frame = requestAnimationFrame(tick)
+  // Force a tiny scroll first — iOS needs this to unlock scrollLeft
+  el.scrollLeft = 1
+
+  const halfWidth = el.scrollWidth / 2
+
+  function tick() {
+    if (!isDragging) {
+      pos += 0.5
+      if (pos >= halfWidth) pos = 0
+      el.scrollLeft = pos
     }
+    frame = requestAnimationFrame(tick)
+  }
 
-    const timer = setTimeout(start, 100)
+  const timer = setTimeout(() => {
+    pos = el.scrollLeft
+    frame = requestAnimationFrame(tick)
+  }, 300)  // slightly longer delay for iOS
 
-    function onMouseDown() { isDragging = true }
-    function onMouseUp() { isDragging = false; pos = el.scrollLeft }
+  function onMouseDown() { isDragging = true }
+  function onMouseUp() { isDragging = false; pos = el.scrollLeft }
 
-    function onTouchStart(e) {
-      touchStartX = e.touches[0].clientX
-      touchStartY = e.touches[0].clientY
-      isDragging = false
-    }
+  function onTouchStart(e) {
+    isDragging = false
+  }
 
-    function onTouchMove(e) {
-      const dx = Math.abs(e.touches[0].clientX - touchStartX)
-      const dy = Math.abs(e.touches[0].clientY - touchStartY)
+  function onTouchEnd() {
+    isDragging = false
+    pos = el.scrollLeft
+  }
 
-      // Only pause auto-scroll if clearly horizontal — never block vertical
-      if (dx > dy && dx > 8) {
-        isDragging = true
-      } else {
-        isDragging = false
-      }
-    }
+  el.addEventListener('mousedown', onMouseDown)
+  window.addEventListener('mouseup', onMouseUp)
+  el.addEventListener('touchstart', onTouchStart, { passive: true })
+  el.addEventListener('touchend', onTouchEnd, { passive: true })
 
-    function onTouchEnd() {
-      isDragging = false
-      pos = el.scrollLeft
-    }
-
-    el.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mouseup', onMouseUp)  // window, not el
-    el.addEventListener('touchstart', onTouchStart, { passive: true })
-    el.addEventListener('touchmove', onTouchMove, { passive: true })
-    el.addEventListener('touchend', onTouchEnd, { passive: true })
-
-    return () => {
-      cancelAnimationFrame(frame)
-      clearTimeout(timer)
-      el.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mouseup', onMouseUp)
-      el.removeEventListener('touchstart', onTouchStart)
-      el.removeEventListener('touchmove', onTouchMove)
-      el.removeEventListener('touchend', onTouchEnd)
-    }
-  }, [])
+  return () => {
+    cancelAnimationFrame(frame)
+    clearTimeout(timer)
+    el.removeEventListener('mousedown', onMouseDown)
+    window.removeEventListener('mouseup', onMouseUp)
+    el.removeEventListener('touchstart', onTouchStart)
+    el.removeEventListener('touchend', onTouchEnd)
+  }
+}, [])
 
   return (
     <div>
@@ -303,7 +289,7 @@ export default function HomePage() {
           <div
             ref={marqueeRef}
             className="flex gap-5 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
-            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto', height: '420px', alignItems: 'center' }}
+            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto',  height: 'clamp(320px, 55vw, 420px)', alignItems: 'center' }}
           >
             {[...SERIES, ...SERIES].map((series, i) => (
              <div key={`${series.id}-${i}`} className="flex-shrink-0 w-64 h-full">
