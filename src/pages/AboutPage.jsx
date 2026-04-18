@@ -131,7 +131,7 @@ export default function AboutPage() {
               },
               {
                 q: 'How long does shipping take?',
-                a: 'Orders ship within 3–5 working days after payment confirmation. We ship via SingPost.',
+                a: 'Orders ship within 2–4 working days after payment confirmation. We ship via SingPost.',
               },
               {
                 q: 'Do you ship internationally?',

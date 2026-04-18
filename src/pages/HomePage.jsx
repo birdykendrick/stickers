@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { PRODUCTS, getFeaturedProducts, getNewArrivals, getProductsBySeries, SERIES } from '../data/products'
@@ -62,6 +63,44 @@ export default function HomePage() {
   const featured = [...allProducts].sort(() => Math.random() - 0.5).slice(0, 4)
   const newArrivals = getNewArrivals().slice(0, 4)
 
+  // ── Marquee scroll ───────────────────────────────────────
+  const marqueeRef = useRef(null)
+
+  useEffect(() => {
+    const el = marqueeRef.current
+    if (!el) return
+    let frame
+    let isDragging = false
+
+    function tick() {
+      if (!el || isDragging) {
+        frame = requestAnimationFrame(tick)
+        return
+      }
+      el.scrollLeft += 0.5
+      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
+      frame = requestAnimationFrame(tick)
+    }
+
+    // Pause on drag/touch so user can swipe freely
+    function onDown() { isDragging = true }
+    function onUp()   { isDragging = false }
+
+    el.addEventListener('mousedown', onDown)
+    el.addEventListener('mouseup', onUp)
+    el.addEventListener('touchstart', onDown, { passive: true })
+    el.addEventListener('touchend', onUp)
+
+    frame = requestAnimationFrame(tick)
+    return () => {
+      cancelAnimationFrame(frame)
+      el.removeEventListener('mousedown', onDown)
+      el.removeEventListener('mouseup', onUp)
+      el.removeEventListener('touchstart', onDown)
+      el.removeEventListener('touchend', onUp)
+    }
+  }, [])
+
   return (
     <div>
       {/* ── HERO ──────────────────────────────────────────────── */}
@@ -70,8 +109,6 @@ export default function HomePage() {
         <div className="absolute top-20 right-10 w-72 h-72 bg-peach/20 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-56 h-56 bg-butter/30 rounded-full blur-2xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blush/10 rounded-full blur-3xl" />
-
-        {/* ── Floating stickers — positioned per breakpoint ── */}
 
         {/* thinkingDuck — top right */}
         <FloatingSticker src={thinkingDuckImg} duration={3.8}
@@ -221,17 +258,17 @@ export default function HomePage() {
           />
         </div>
 
-        {/* Marquee — loops right to left */}
-        <div className="relative w-full overflow-hidden py-4">
+        {/* Scroll marquee */}
+        <div className="relative w-full py-4">
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
 
           <div
-            className="flex gap-5 items-stretch"
-            style={{ animation: 'marquee 20s linear infinite' }}
+            ref={marqueeRef}
+            className="flex gap-5 items-stretch overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
+            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
           >
-            {/* Duplicate all series for seamless loop */}
             {[...SERIES, ...SERIES].map((series, i) => (
               <div key={`${series.id}-${i}`} className="flex-shrink-0 w-64">
                 <CollectionCard series={series} delay={0} />
@@ -246,26 +283,6 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-
-      {/* ── NEW ARRIVALS ───────────────────────────────────────
-      <section className="section-pad bg-parchment">
-        <div className="container-max">
-          <div className="flex items-end justify-between mb-10">
-            <SectionHeader
-              tag="Just Dropped"
-              title="New Arrivals"
-            />
-            <Link to="/shop?filter=new" className="btn-secondary text-sm hidden md:inline-flex">
-              See all new →
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
-            {newArrivals.map((p, i) => (
-              <ProductCard key={p.id} product={p} delay={i * 0.08} />
-            ))}
-          </div>
-        </div>
-      </section> */}
 
       {/* ── HOW TO ORDER ─────────────────────────────────────── */}
       <section id="how-to-order" className="section-pad bg-butter/20">
@@ -366,8 +383,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-
     </div>
   )
 }

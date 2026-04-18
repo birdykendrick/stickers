@@ -4,27 +4,32 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
 import StickerImage from '../components/StickerImage'
 
-// Generate a simple order reference
 function generateRef() {
   return 'SMO-' + Date.now().toString(36).toUpperCase().slice(-6)
 }
 
-// Simple QR code placeholder
-function QRPlaceholder({ label }) {
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="w-32 h-32 bg-white rounded-2xl border-2 border-dashed border-light-gray flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-3xl">📱</span>
-          <p className="font-mono text-[9px] text-warm-gray mt-1">QR Code</p>
-        </div>
-      </div>
-      <p className="font-mono text-xs text-charcoal font-medium">{label}</p>
-    </div>
+const WHATSAPP_NUMBER = '6597781258'
+
+function buildWhatsAppMessage(form, items, orderRef, payMethod, subtotal, shipping, total) {
+  const itemList = items.map(i =>
+    `• ${i.product.name} (${i.size}) x${i.quantity} — $${(i.product.price * i.quantity).toFixed(2)}`
+  ).join('\n')
+  return encodeURIComponent(
+    `Hi StickKhoo! I'd like to place an order!\n\n` +
+    `Order Ref: ${orderRef}\n` +
+    `Name: ${form.name}\n` +
+    `Phone: ${form.phone}\n` +
+    `Email: ${form.email}\n` +
+    `Address: ${form.address}\n` +
+    (form.notes ? `Notes: ${form.notes}\n` : '') +
+    `\nItems:\n${itemList}\n\n` +
+    `Subtotal: $${subtotal.toFixed(2)}\n` +
+    `Shipping: ${shipping === 0 ? 'Free' : '$' + shipping.toFixed(2)}\n` +
+    `Total: $${total.toFixed(2)}\n` +
+    `Payment: ${payMethod === 'paynow' ? 'PayNow' : 'PayLah!'}`
   )
 }
 
-// ── Field must live OUTSIDE CheckoutPage to prevent re-mount on every render ──
 function Field({ label, name, type = 'text', placeholder, textarea, value, onChange, error }) {
   return (
     <div>
@@ -61,16 +66,12 @@ export default function CheckoutPage() {
   const shipping = subtotal >= 10 ? 0 : 1
   const total = subtotal + shipping
 
-  const [step, setStep] = useState('form') // 'form' | 'payment' | 'confirm'
+  const [step, setStep] = useState('form')
   const [payMethod, setPayMethod] = useState('paynow')
   const [orderRef] = useState(generateRef)
 
   const [form, setForm] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    address: '',
-    notes: '',
+    name: '', phone: '', email: '', address: '', notes: '',
   })
   const [errors, setErrors] = useState({})
 
@@ -88,81 +89,19 @@ export default function CheckoutPage() {
     if (validate()) setStep('payment')
   }
 
-  const handlePlaceOrder = () => {
-    setStep('confirm')
-    clearCart()
-  }
-
   const handleChange = (name) => (e) => setForm(f => ({ ...f, [name]: e.target.value }))
 
-  // ── CONFIRMATION SCREEN ────────────────────────────────────
-  if (step === 'confirm') {
-    return (
-      <div className="section-pad">
-        <div className="container-max max-w-lg mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          >
-            <span className="text-7xl block mb-6">🎉</span>
-            <h1 className="font-display font-bold text-4xl text-charcoal">Order placed!</h1>
-            <p className="font-sans text-warm-gray mt-3 leading-relaxed">
-              We've received your order. Please complete your payment to confirm it.
-            </p>
-
-            <div className="bg-parchment rounded-3xl p-6 mt-8 text-left space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="font-sans text-sm text-warm-gray">Order reference</span>
-                <span className="font-mono font-bold text-charcoal">{orderRef}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-sans text-sm text-warm-gray">Total</span>
-                <span className="font-mono font-bold text-charcoal">${total.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-sans text-sm text-warm-gray">Payment</span>
-                <span className="font-mono text-sm text-charcoal capitalize">{payMethod}</span>
-              </div>
-            </div>
-
-            <div className="bg-butter/30 rounded-3xl p-6 mt-5 text-left">
-              <h3 className="font-sans font-semibold text-charcoal mb-3">Next steps</h3>
-              <ol className="space-y-2">
-                {[
-                  `Send $${total.toFixed(2)} via ${payMethod === 'paynow' ? 'PayNow' : 'PayLah!'}`,
-                  `Screenshot your payment receipt`,
-                  `DM us on Instagram or Telegram with your receipt + order ref: ${orderRef}`,
-                  `We'll confirm and ship within 2–4 working days 🚀`,
-                ].map((step, i) => (
-                  <li key={i} className="flex items-start gap-3 font-sans text-sm text-warm-gray">
-                    <span className="font-mono text-xs bg-white rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0 mt-0.5 text-charcoal">
-                      {i + 1}
-                    </span>
-                    {step}
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-3 mt-8">
-              <Link to="/shop" className="btn-primary flex-1 justify-center">
-                Shop more stickers
-              </Link>
-              <Link to="/" className="btn-secondary flex-1 justify-center">
-                Back to home
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    )
+  const handleFinalise = () => {
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${buildWhatsAppMessage(form, items, orderRef, payMethod, subtotal, shipping, total)}`
+    clearCart()
+    window.open(url, '_blank')
   }
 
   return (
     <div className="section-pad">
       <div className="container-max">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14">
+
           {/* Left: Form / Payment */}
           <div>
             {/* Step indicator */}
@@ -172,8 +111,9 @@ export default function CheckoutPage() {
                 return (
                   <div key={s} className="flex items-center gap-3">
                     <div className={`flex items-center gap-2 ${i <= current ? 'text-charcoal' : 'text-warm-gray'}`}>
-                      <span className={`w-7 h-7 rounded-full font-mono text-xs flex items-center justify-center font-bold ${i < current ? 'bg-sage text-white' : i === current ? 'bg-charcoal text-cream' : 'bg-light-gray text-warm-gray'
-                        }`}>
+                      <span className={`w-7 h-7 rounded-full font-mono text-xs flex items-center justify-center font-bold ${
+                        i < current ? 'bg-sage text-white' : i === current ? 'bg-charcoal text-cream' : 'bg-light-gray text-warm-gray'
+                      }`}>
                         {i < current ? '✓' : i + 1}
                       </span>
                       <span className="font-sans font-medium text-sm">{s}</span>
@@ -185,6 +125,7 @@ export default function CheckoutPage() {
             </div>
 
             <AnimatePresence mode="wait">
+              {/* ── STEP 1: DETAILS ── */}
               {step === 'form' && (
                 <motion.div
                   key="form"
@@ -195,51 +136,11 @@ export default function CheckoutPage() {
                   className="space-y-5"
                 >
                   <h2 className="font-display font-bold text-2xl text-charcoal">Your Details</h2>
-
-                  <Field
-                    label="Full Name"
-                    name="name"
-                    placeholder="Chris"
-                    value={form.name}
-                    onChange={handleChange('name')}
-                    error={errors.name}
-                  />
-                  <Field
-                    label="Phone Number"
-                    name="phone"
-                    type="tel"
-                    placeholder="9123 4567"
-                    value={form.phone}
-                    onChange={handleChange('phone')}
-                    error={errors.phone}
-                  />
-                  <Field
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    placeholder="Chris@email.com"
-                    value={form.email}
-                    onChange={handleChange('email')}
-                    error={errors.email}
-                  />
-                  <Field
-                    label="Delivery Address"
-                    name="address"
-                    textarea
-                    placeholder="Blk 123 Yishun Ave 1, #05-678, Singapore 760123"
-                    value={form.address}
-                    onChange={handleChange('address')}
-                    error={errors.address}
-                  />
-                  <Field
-                    label="Notes / Special Requests (Optional)"
-                    name="notes"
-                    textarea
-                    placeholder="Any special instructions? Let us know!"
-                    value={form.notes}
-                    onChange={handleChange('notes')}
-                  />
-
+                  <Field label="Full Name" name="name" placeholder="Chris" value={form.name} onChange={handleChange('name')} error={errors.name} />
+                  <Field label="Phone Number" name="phone" type="tel" placeholder="9123 4567" value={form.phone} onChange={handleChange('phone')} error={errors.phone} />
+                  <Field label="Email Address" name="email" type="email" placeholder="chris@email.com" value={form.email} onChange={handleChange('email')} error={errors.email} />
+                  <Field label="Delivery Address" name="address" textarea placeholder="Blk 123 Yishun Ave 1, #05-678, Singapore 760123" value={form.address} onChange={handleChange('address')} error={errors.address} />
+                  <Field label="Notes / Special Requests (Optional)" name="notes" textarea placeholder="Any special instructions? Let us know!" value={form.notes} onChange={handleChange('notes')} />
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSubmitDetails}
@@ -250,6 +151,7 @@ export default function CheckoutPage() {
                 </motion.div>
               )}
 
+              {/* ── STEP 2: PAYMENT ── */}
               {step === 'payment' && (
                 <motion.div
                   key="payment"
@@ -260,10 +162,7 @@ export default function CheckoutPage() {
                   className="space-y-6"
                 >
                   <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => setStep('form')}
-                      className="text-warm-gray hover:text-charcoal transition-colors"
-                    >
+                    <button onClick={() => setStep('form')} className="text-warm-gray hover:text-charcoal transition-colors">
                       ← Back
                     </button>
                     <h2 className="font-display font-bold text-2xl text-charcoal">Payment</h2>
@@ -280,10 +179,9 @@ export default function CheckoutPage() {
                         <button
                           key={m.id}
                           onClick={() => setPayMethod(m.id)}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all ${payMethod === m.id
-                              ? 'border-charcoal bg-charcoal/5'
-                              : 'border-light-gray bg-white hover:border-charcoal/20'
-                            }`}
+                          className={`p-4 rounded-2xl border-2 text-left transition-all ${
+                            payMethod === m.id ? 'border-charcoal bg-charcoal/5' : 'border-light-gray bg-white hover:border-charcoal/20'
+                          }`}
                         >
                           <span className="text-2xl block mb-2">{m.emoji}</span>
                           <p className="font-sans font-semibold text-charcoal text-sm">{m.label}</p>
@@ -293,43 +191,50 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
-                  {/* QR code area */}
-                  <div className="bg-parchment rounded-3xl p-6">
-                    <p className="font-sans font-semibold text-charcoal text-sm mb-4">
-                      Scan to pay ${total.toFixed(2)}
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center gap-6">
-                      <QRPlaceholder label={payMethod === 'paynow' ? 'PayNow QR' : 'PayLah! QR'} />
-                      <div className="space-y-3 text-sm text-warm-gray font-sans flex-1">
-                        <p>
-                          <strong className="text-charcoal">UEN / Number:</strong><br />
-                          {payMethod === 'paynow' ? '12345678A (smolstuck)' : '91234567 (Jane S.)'}
-                        </p>
-                        <p>
-                          <strong className="text-charcoal">Amount:</strong><br />
-                          ${total.toFixed(2)} SGD
-                        </p>
-                        <p>
-                          <strong className="text-charcoal">Reference:</strong><br />
-                          <span className="font-mono text-charcoal">{orderRef}</span>
-                        </p>
-                      </div>
+                  {/* Order summary */}
+                  <div className="bg-parchment rounded-3xl p-4 space-y-3">
+                    <p className="font-sans font-semibold text-charcoal text-sm">Order Summary</p>
+                    <div className="space-y-2">
+                      {items.map(item => (
+                        <div key={item.key} className="flex items-center gap-2">
+                          <div className="w-9 h-9 rounded-lg overflow-hidden flex-shrink-0">
+                            <StickerImage product={item.product} size="sm" className="w-full h-full" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-sans font-medium text-charcoal text-xs truncate">{item.product.name}</p>
+                            <p className="font-mono text-[10px] text-warm-gray">{item.size} · ×{item.quantity}</p>
+                          </div>
+                          <span className="font-mono text-xs text-charcoal">${(item.product.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-light-gray pt-2 flex justify-between font-sans font-bold text-charcoal text-sm">
+                      <span>Total</span><span className="font-mono">${total.toFixed(2)}</span>
                     </div>
 
-                    <div className="mt-5 bg-butter/40 rounded-2xl p-4 font-sans text-sm text-charcoal">
-                      <strong>After paying:</strong> Screenshot your receipt and DM us on{' '}
-                      <strong>Instagram</strong> or <strong>Telegram</strong> with your order reference{' '}
-                      <span className="font-mono">{orderRef}</span>.
+                    {/* Delivery details recap */}
+                    <div className="border-t border-light-gray pt-2 grid grid-cols-2 gap-x-3 gap-y-1">
+                      <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Name:</strong> {form.name}</p>
+                      <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Number:</strong> {form.phone}</p>
+                      <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Email:</strong> {form.email}</p>
+                      <p className="font-sans text-xs text-warm-gray col-span-2"><strong className="text-charcoal">Address:</strong> {form.address}</p>
+                      {form.notes && <p className="font-sans text-xs text-warm-gray col-span-2 italic">"{form.notes}"</p>}
                     </div>
                   </div>
 
-                  <motion.button
-                    whileTap={{ scale: 0.98 }}
-                    onClick={handlePlaceOrder}
-                    className="btn-primary w-full justify-center text-base py-4"
-                  >
-                    ✓ I've sent payment — Place Order
-                  </motion.button>
+                  {/* Finalise button */}
+                  <div className="bg-parchment rounded-3xl p-4 text-center space-y-2">
+                    <p className="font-sans text-xs text-warm-gray leading-relaxed">
+                      Ready? Tap below and we'll receive your order details via message. We'll confirm and get it shipped! 🚀
+                    </p>
+                    <motion.button
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleFinalise}
+                      className="btn-primary w-full justify-center text-base py-3"
+                    >
+                      I've finalised my order →
+                    </motion.button>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -339,29 +244,15 @@ export default function CheckoutPage() {
           <div>
             <div className="bg-parchment rounded-3xl p-6 sticky top-24">
               <h3 className="font-display font-bold text-xl text-charcoal mb-5">Order Summary</h3>
-
               {items.length === 0 ? (
                 <div className="text-center py-8">
-                  <svg
-                    className="mx-auto"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
+                  <svg className="mx-auto" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <path d="M16 10a4 4 0 01-8 0" />
                   </svg>
-
                   <p className="font-sans text-warm-gray text-sm mt-2">Your cart is empty</p>
-                  <Link to="/shop" className="btn-primary text-sm mt-4 inline-flex">
-                    Shop now
-                  </Link>
+                  <Link to="/shop" className="btn-primary text-sm mt-4 inline-flex">Shop now</Link>
                 </div>
               ) : (
                 <>
@@ -372,66 +263,34 @@ export default function CheckoutPage() {
                           <StickerImage product={item.product} size="sm" className="w-full h-full" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-sans font-medium text-charcoal text-sm truncate">
-                            {item.product.name}
-                          </p>
-                          <p className="font-mono text-xs text-warm-gray">
-                            {item.size} · ×{item.quantity}
-                          </p>
+                          <p className="font-sans font-medium text-charcoal text-sm truncate">{item.product.name}</p>
+                          <p className="font-mono text-xs text-warm-gray">{item.size} · ×{item.quantity}</p>
                         </div>
-                        <span className="font-mono text-sm text-charcoal">
-                          ${(item.product.price * item.quantity).toFixed(2)}
-                        </span>
+                        <span className="font-mono text-sm text-charcoal">${(item.product.price * item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
-
                   <div className="border-t border-light-gray pt-4 space-y-2">
                     <div className="flex justify-between font-sans text-sm text-warm-gray">
-                      <span>Subtotal</span>
-                      <span className="font-mono">${subtotal.toFixed(2)}</span>
+                      <span>Subtotal</span><span className="font-mono">${subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between font-sans text-sm text-warm-gray">
                       <span>Shipping</span>
-                      <span className="font-mono">
-                        {shipping === 0 ? (
-                          <span className="text-sage font-medium">Free</span>
-                        ) : (
-                          `$${shipping.toFixed(2)}`
-                        )}
-                      </span>
+                      <span className="font-mono">{shipping === 0 ? <span className="text-sage font-medium">Free</span> : `$${shipping.toFixed(2)}`}</span>
                     </div>
-                    {shipping > 0 && (
-                      <p className="font-mono text-[10px] text-warm-gray">
-                        Free shipping on orders above $10
-                      </p>
-                    )}
+                    {shipping > 0 && <p className="font-mono text-[10px] text-warm-gray">Free shipping on orders above $10</p>}
                     <div className="flex justify-between font-sans font-bold text-charcoal text-base pt-2 border-t border-light-gray">
-                      <span>Total</span>
-                      <span className="font-mono">${total.toFixed(2)}</span>
+                      <span>Total</span><span className="font-mono">${total.toFixed(2)}</span>
                     </div>
                   </div>
-
-                  {/* Estimated delivery — SVG truck icon instead of emoji */}
                   <div className="mt-4 bg-white rounded-2xl p-3 flex items-center gap-2.5">
-                    <svg
-                      width="18" height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-warm-gray flex-shrink-0"
-                    >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-warm-gray flex-shrink-0">
                       <rect x="1" y="3" width="15" height="13" />
                       <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
                       <circle cx="5.5" cy="18.5" r="2.5" />
                       <circle cx="18.5" cy="18.5" r="2.5" />
                     </svg>
-                    <p className="font-mono text-xs text-warm-gray">
-                      Estimated delivery: 2–4 working days
-                    </p>
+                    <p className="font-mono text-xs text-warm-gray">Estimated delivery: 2–4 working days</p>
                   </div>
                 </>
               )}
