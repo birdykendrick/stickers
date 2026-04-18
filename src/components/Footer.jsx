@@ -14,6 +14,19 @@ export default function Footer() {
             <p className="font-sans text-warm-gray text-sm leading-relaxed max-w-xs">
               Tiny stickers for big feelings. Hand-drawn with love, shipped with care, from Singapore to you.
             </p>
+            <a
+              href="https://www.instagram.com/stick.khoo/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-4 font-sans text-sm text-warm-gray hover:text-charcoal transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor"/>
+              </svg>
+              @stick.khoo
+            </a>
           </div>
 
           {/* Collections */}

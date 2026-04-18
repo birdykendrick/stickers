@@ -70,58 +70,49 @@ export default function HomePage() {
   const marqueeRef = useRef(null)
 
   useEffect(() => {
-  const el = marqueeRef.current
-  if (!el) return
+    const el = marqueeRef.current
+    if (!el) return
 
-  let frame
-  let isDragging = false
-  let pos = 0
+    let frame
+    let pos = 0
+    let isDragging = false
 
-  // Force a tiny scroll first — iOS needs this to unlock scrollLeft
-  el.scrollLeft = 1
-
-  const halfWidth = el.scrollWidth / 2
-
-  function tick() {
-    if (!isDragging) {
-      pos += 0.5
-      if (pos >= halfWidth) pos = 0
-      el.scrollLeft = pos
+    function tick() {
+      if (!isDragging) {
+        pos += 0.4
+        const halfWidth = el.scrollWidth / 2
+        if (pos >= halfWidth) pos = 0
+        el.scrollLeft = pos
+      }
+      frame = requestAnimationFrame(tick)
     }
-    frame = requestAnimationFrame(tick)
-  }
 
-  const timer = setTimeout(() => {
-    pos = el.scrollLeft
-    frame = requestAnimationFrame(tick)
-  }, 300)  // slightly longer delay for iOS
+    // iOS needs a delay + forced layout before scrollLeft works
+    const timer = setTimeout(() => {
+      el.scrollLeft = 0
+      pos = 0
+      frame = requestAnimationFrame(tick)
+    }, 500)
 
-  function onMouseDown() { isDragging = true }
-  function onMouseUp() { isDragging = false; pos = el.scrollLeft }
+    function onMouseDown() { isDragging = true }
+    function onMouseUp() { isDragging = false; pos = el.scrollLeft }
+    function onTouchStart() { isDragging = true }
+    function onTouchEnd() { isDragging = false; pos = el.scrollLeft }
 
-  function onTouchStart(e) {
-    isDragging = false
-  }
+    el.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mouseup', onMouseUp)
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
 
-  function onTouchEnd() {
-    isDragging = false
-    pos = el.scrollLeft
-  }
-
-  el.addEventListener('mousedown', onMouseDown)
-  window.addEventListener('mouseup', onMouseUp)
-  el.addEventListener('touchstart', onTouchStart, { passive: true })
-  el.addEventListener('touchend', onTouchEnd, { passive: true })
-
-  return () => {
-    cancelAnimationFrame(frame)
-    clearTimeout(timer)
-    el.removeEventListener('mousedown', onMouseDown)
-    window.removeEventListener('mouseup', onMouseUp)
-    el.removeEventListener('touchstart', onTouchStart)
-    el.removeEventListener('touchend', onTouchEnd)
-  }
-}, [])
+    return () => {
+      cancelAnimationFrame(frame)
+      clearTimeout(timer)
+      el.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mouseup', onMouseUp)
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchend', onTouchEnd)
+    }
+  }, [])
 
   return (
     <div>
@@ -289,10 +280,16 @@ export default function HomePage() {
           <div
             ref={marqueeRef}
             className="flex gap-5 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
-            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto',  height: 'clamp(320px, 55vw, 420px)', alignItems: 'center' }}
+            style={{
+              WebkitOverflowScrolling: 'touch',
+              scrollBehavior: 'auto',
+              height: '340px',
+              alignItems: 'center',
+              overflowY: 'hidden',
+            }}
           >
             {[...SERIES, ...SERIES].map((series, i) => (
-             <div key={`${series.id}-${i}`} className="flex-shrink-0 w-64 h-full">
+              <div key={`${series.id}-${i}`} className="flex-shrink-0 w-56 h-full">
                 <CollectionCard series={series} delay={0} />
               </div>
             ))}
