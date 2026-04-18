@@ -63,41 +63,77 @@ export default function HomePage() {
   const featured = [...allProducts].sort(() => Math.random() - 0.5).slice(0, 4)
   const newArrivals = getNewArrivals().slice(0, 4)
 
+  const seriesCount = 5
+  const stickerCount = 30
+
   // ── Marquee scroll ───────────────────────────────────────
   const marqueeRef = useRef(null)
 
   useEffect(() => {
     const el = marqueeRef.current
     if (!el) return
+
     let frame
     let isDragging = false
+    let pos = 0
+    let touchStartX = 0
+    let touchStartY = 0
 
-    function tick() {
-      if (!el || isDragging) {
+    const start = () => {
+      const halfWidth = el.scrollWidth / 2
+      function tick() {
+        if (!isDragging) {
+          pos += 0.5
+          if (pos >= halfWidth) pos = 0
+          el.scrollLeft = pos
+        }
         frame = requestAnimationFrame(tick)
-        return
       }
-      el.scrollLeft += 0.5
-      if (el.scrollLeft >= el.scrollWidth / 2) el.scrollLeft = 0
       frame = requestAnimationFrame(tick)
     }
 
-    // Pause on drag/touch so user can swipe freely
-    function onDown() { isDragging = true }
-    function onUp()   { isDragging = false }
+    const timer = setTimeout(start, 100)
 
-    el.addEventListener('mousedown', onDown)
-    el.addEventListener('mouseup', onUp)
-    el.addEventListener('touchstart', onDown, { passive: true })
-    el.addEventListener('touchend', onUp)
+    function onMouseDown() { isDragging = true }
+    function onMouseUp() { isDragging = false; pos = el.scrollLeft }
 
-    frame = requestAnimationFrame(tick)
+    function onTouchStart(e) {
+      touchStartX = e.touches[0].clientX
+      touchStartY = e.touches[0].clientY
+      isDragging = false
+    }
+
+    function onTouchMove(e) {
+      const dx = Math.abs(e.touches[0].clientX - touchStartX)
+      const dy = Math.abs(e.touches[0].clientY - touchStartY)
+
+      // Only pause auto-scroll if clearly horizontal — never block vertical
+      if (dx > dy && dx > 8) {
+        isDragging = true
+      } else {
+        isDragging = false
+      }
+    }
+
+    function onTouchEnd() {
+      isDragging = false
+      pos = el.scrollLeft
+    }
+
+    el.addEventListener('mousedown', onMouseDown)
+    window.addEventListener('mouseup', onMouseUp)  // window, not el
+    el.addEventListener('touchstart', onTouchStart, { passive: true })
+    el.addEventListener('touchmove', onTouchMove, { passive: true })
+    el.addEventListener('touchend', onTouchEnd, { passive: true })
+
     return () => {
       cancelAnimationFrame(frame)
-      el.removeEventListener('mousedown', onDown)
-      el.removeEventListener('mouseup', onUp)
-      el.removeEventListener('touchstart', onDown)
-      el.removeEventListener('touchend', onUp)
+      clearTimeout(timer)
+      el.removeEventListener('mousedown', onMouseDown)
+      window.removeEventListener('mouseup', onMouseUp)
+      el.removeEventListener('touchstart', onTouchStart)
+      el.removeEventListener('touchmove', onTouchMove)
+      el.removeEventListener('touchend', onTouchEnd)
     }
   }, [])
 
@@ -216,7 +252,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="font-sans text-sm text-warm-gray">
-                  <strong className="text-charcoal">4 series</strong> · 16 stickers · loved by chaotic people
+                  <strong className="text-charcoal">{seriesCount} series</strong> · {stickerCount} stickers · loved by chaotic people
                 </p>
               </div>
             </FadeUp>
@@ -259,18 +295,18 @@ export default function HomePage() {
         </div>
 
         {/* Scroll marquee */}
-        <div className="relative w-full py-4">
+        <div className="relative w-full py-8">
           {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-cream to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-cream to-transparent z-10 pointer-events-none" />
 
           <div
             ref={marqueeRef}
-            className="flex gap-5 items-stretch overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
-            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto' }}
+            className="flex gap-5 overflow-x-auto scrollbar-hide cursor-grab active:cursor-grabbing px-4"
+            style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'auto', height: '420px', alignItems: 'center' }}
           >
             {[...SERIES, ...SERIES].map((series, i) => (
-              <div key={`${series.id}-${i}`} className="flex-shrink-0 w-64">
+             <div key={`${series.id}-${i}`} className="flex-shrink-0 w-64 h-full">
                 <CollectionCard series={series} delay={0} />
               </div>
             ))}

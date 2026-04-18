@@ -7,8 +7,8 @@ import { showToast } from './Toast'
 export default function ProductCard({ product, delay = 0 }) {
   const { addItem, updateQuantity, items } = useCartStore()
 
-  const cartKey = `${product.id}-${product.sizes?.[0] || 'Standard'}`
-  const cartItem = items.find(i => i.key === cartKey)
+  const cartKey = `${product.id}-${product.sizeOptions?.[0]?.label || 'Small'}`
+const cartItem = items.find(i => i.key === cartKey)
   const qty = cartItem?.quantity ?? 0
 
   const handleDecrement = (e) => {
@@ -20,7 +20,7 @@ export default function ProductCard({ product, delay = 0 }) {
   const handleIncrement = (e) => {
     e.preventDefault()
     e.stopPropagation()
-    addItem(product, product.sizes?.[0] || 'Standard', 1)
+    addItem(product, product.sizeOptions?.[0]?.label || 'Small', 1)
     showToast(`${product.name} added!`, '🛒')
   }
 

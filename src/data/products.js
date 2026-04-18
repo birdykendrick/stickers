@@ -107,8 +107,8 @@ export const SERIES = [
 // ── SHARED SIZES ──────────────────────────────────────────────
 
 const SIZES = [
-  { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
-  { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
+  { label: 'Small', display: 'Small (3.5 × 3.5 cm)', price: 1.50 },
+  { label: 'Medium', display: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
 ]
 
 // ── PRODUCTS ──────────────────────────────────────────────────

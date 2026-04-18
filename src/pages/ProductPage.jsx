@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { getProductBySlug, getRelatedProducts } from '../data/products'
 import { useCartStore } from '../store/cartStore'
@@ -16,7 +16,6 @@ const SERIES_COLORS = {
   'food-mood': 'bg-sage-light/60 text-green-800',
 }
 
-// Fallback sizes if product doesn't define its own
 const DEFAULT_SIZES = [
   { label: 'Small (3.5 × 3.5 cm)', price: 1.50 },
   { label: 'Medium (4.5 × 4.5 cm)', price: 2.00 },
@@ -62,10 +61,10 @@ const NOTES = [
 
 export default function ProductPage() {
   const { slug } = useParams()
+  const navigate = useNavigate()
   const product = getProductBySlug(slug)
   const { addItem } = useCartStore()
 
-  // Use per-product sizeOptions if defined, else fall back to defaults
   const sizes = product?.sizeOptions?.length > 0 ? product.sizeOptions : DEFAULT_SIZES
 
   const [quantity, setQuantity] = useState(1)
@@ -99,23 +98,24 @@ export default function ProductPage() {
   return (
     <div className="section-pad">
       <div className="container-max">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 font-mono text-xs text-warm-gray mb-6">
-          <Link to="/" className="hover:text-charcoal transition-colors">Home</Link>
-          <span>/</span>
-          <Link to="/shop" className="hover:text-charcoal transition-colors">Shop</Link>
-          <span>/</span>
-          <Link to={`/collections/${product.series}`} className="hover:text-charcoal transition-colors">
-            {product.seriesName}
-          </Link>
-          <span>/</span>
-          <span className="text-charcoal">{product.name}</span>
-        </nav>
+
+        {/* Back button */}
+<button
+  onClick={() => navigate(-1)}
+  className="flex items-center gap-2 mb-6 font-sans text-sm font-medium text-warm-gray hover:text-charcoal transition-colors group"
+>
+  <span className="w-8 h-8 rounded-full bg-white border border-light-gray flex items-center justify-center group-hover:border-charcoal/30 group-hover:shadow-sm transition-all">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </span>
+  Back
+</button>
 
         {/* Mobile: stacked. Desktop: side by side */}
         <div className="flex flex-col lg:grid lg:grid-cols-2 lg:gap-16">
 
-          {/* Image — smaller on mobile */}
+          {/* Image */}
           <motion.div
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -143,7 +143,7 @@ export default function ProductPage() {
               {product.popular && <span className="tag bg-peach text-charcoal">Popular</span>}
             </div>
 
-            {/* Title & price — updates with selected size */}
+            {/* Title & price */}
             <div>
               <h1 className="font-display font-bold text-3xl md:text-4xl text-charcoal">{product.name}</h1>
               <p className="font-mono font-bold text-2xl text-charcoal mt-1">
@@ -168,7 +168,7 @@ export default function ProductPage() {
                         : 'bg-white text-warm-gray border-light-gray hover:border-charcoal/30'
                     }`}
                   >
-                    {size.label} — ${size.price.toFixed(2)}
+                    {size.display} — ${size.price.toFixed(2)}
                   </button>
                 ))}
               </div>

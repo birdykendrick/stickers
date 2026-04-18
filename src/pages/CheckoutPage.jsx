@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
 import StickerImage from '../components/StickerImage'
+import paynowImg from '../assets/paynow.PNG'
+import paylahImg from '../assets/paylah.png'
 
 function generateRef() {
   return 'SMO-' + Date.now().toString(36).toUpperCase().slice(-6)
 }
 
-const WHATSAPP_NUMBER = '6597781258'
+const WHATSAPP_NUMBER = '6598871258'
 
 function buildWhatsAppMessage(form, items, orderRef, payMethod, subtotal, shipping, total) {
   const itemList = items.map(i =>
@@ -111,9 +113,8 @@ export default function CheckoutPage() {
                 return (
                   <div key={s} className="flex items-center gap-3">
                     <div className={`flex items-center gap-2 ${i <= current ? 'text-charcoal' : 'text-warm-gray'}`}>
-                      <span className={`w-7 h-7 rounded-full font-mono text-xs flex items-center justify-center font-bold ${
-                        i < current ? 'bg-sage text-white' : i === current ? 'bg-charcoal text-cream' : 'bg-light-gray text-warm-gray'
-                      }`}>
+                      <span className={`w-7 h-7 rounded-full font-mono text-xs flex items-center justify-center font-bold ${i < current ? 'bg-sage text-white' : i === current ? 'bg-charcoal text-cream' : 'bg-light-gray text-warm-gray'
+                        }`}>
                         {i < current ? '✓' : i + 1}
                       </span>
                       <span className="font-sans font-medium text-sm">{s}</span>
@@ -173,17 +174,16 @@ export default function CheckoutPage() {
                     <p className="font-sans font-medium text-charcoal text-sm mb-3">Choose payment method</p>
                     <div className="grid grid-cols-2 gap-3">
                       {[
-                        { id: 'paynow', label: 'PayNow', emoji: '🏦', desc: 'Transfer via PayNow UEN' },
-                        { id: 'paylah', label: 'PayLah!', emoji: '📲', desc: 'DBS PayLah! app' },
+                        { id: 'paynow', label: 'PayNow', desc: 'Transfer via PayNow QR Code', img: paynowImg },
+                        { id: 'paylah', label: 'PayLah!', desc: 'DBS PayLah! app', img: paylahImg },
                       ].map(m => (
                         <button
                           key={m.id}
                           onClick={() => setPayMethod(m.id)}
-                          className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                            payMethod === m.id ? 'border-charcoal bg-charcoal/5' : 'border-light-gray bg-white hover:border-charcoal/20'
-                          }`}
+                          className={`p-4 rounded-2xl border-2 text-left transition-all ${payMethod === m.id ? 'border-charcoal bg-charcoal/5' : 'border-light-gray bg-white hover:border-charcoal/20'
+                            }`}
                         >
-                          <span className="text-2xl block mb-2">{m.emoji}</span>
+                          <img src={m.img} alt={m.label} className="h-7 w-auto object-contain mb-2" />
                           <p className="font-sans font-semibold text-charcoal text-sm">{m.label}</p>
                           <p className="font-mono text-xs text-warm-gray mt-0.5">{m.desc}</p>
                         </button>
@@ -217,7 +217,7 @@ export default function CheckoutPage() {
                       <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Name:</strong> {form.name}</p>
                       <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Number:</strong> {form.phone}</p>
                       <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Email:</strong> {form.email}</p>
-                      <p className="font-sans text-xs text-warm-gray col-span-2"><strong className="text-charcoal">Address:</strong> {form.address}</p>
+                      <p className="font-sans text-xs text-warm-gray"><strong className="text-charcoal">Address:</strong> {form.address}</p>
                       {form.notes && <p className="font-sans text-xs text-warm-gray col-span-2 italic">"{form.notes}"</p>}
                     </div>
                   </div>
@@ -225,7 +225,7 @@ export default function CheckoutPage() {
                   {/* Finalise button */}
                   <div className="bg-parchment rounded-3xl p-4 text-center space-y-2">
                     <p className="font-sans text-xs text-warm-gray leading-relaxed">
-                      Ready? Tap below and we'll receive your order details via message. We'll confirm and get it shipped! 🚀
+                      Ready? Tap below and we'll receive your order details via WhatsApp. We'll confirm and get it shipped!
                     </p>
                     <motion.button
                       whileTap={{ scale: 0.98 }}
