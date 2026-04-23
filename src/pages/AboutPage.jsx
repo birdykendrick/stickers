@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import sunglassDuckImg from '../assets/sunglassduck.png'
 import aboutMePhoto from '../assets/aboutmephoto.png'
+import SEOHead from '../components/SEOHead'
 
 function FadeUp({ children, delay = 0, className = '' }) {
   return (
@@ -20,6 +21,11 @@ function FadeUp({ children, delay = 0, className = '' }) {
 export default function AboutPage() {
   return (
     <div>
+      <SEOHead
+        title="About StickKhoo"
+        description="Hand-drawn with love in Singapore. Learn about StickKhoo — who we are, how we work, and why we make cute stickers."
+        url="/about"
+      />
       {/* Hero */}
       <section className="section-pad bg-parchment relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-peach/20 rounded-full blur-3xl" />

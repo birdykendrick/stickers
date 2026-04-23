@@ -1,10 +1,16 @@
 import { motion } from 'framer-motion'
 import { SERIES } from '../data/products'
 import SectionHeader from '../components/SectionHeader'
+import SEOHead from '../components/SEOHead'
 
 export default function CollectionsPage() {
   return (
     <div className="section-pad">
+      <SEOHead
+        title="Sticker Collections"
+        description="Explore StickKhoo's sticker series — Duck Series, Otter Series, Food Series and more. Each collection is a little world of its own."
+        url="/collections"
+      />
       <div className="container-max">
         <SectionHeader
           tag="Series"

@@ -1,10 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCartStore } from '../store/cartStore'
 import StickerImage from '../components/StickerImage'
+import SEOHead from '../components/SEOHead'
 import paynowImg from '../assets/paynow.png'
 import paylahImg from '../assets/paylah.png'
+
+// ─── CLOUDFLARE TURNSTILE SITE KEY ───────────────────────────
+// 🔁 Replace with your actual site key from dash.cloudflare.com → Turnstile
+// During development, use Cloudflare's always-pass test key:
+const TURNSTILE_SITE_KEY = '0x4AAAAAADBs7N5s6pNih179'
+// ─────────────────────────────────────────────────────────────
 
 function generateRef() {
   return 'SMO-' + Date.now().toString(36).toUpperCase().slice(-6)
@@ -62,6 +69,71 @@ function Field({ label, name, type = 'text', placeholder, textarea, value, onCha
   )
 }
 
+// ─── Turnstile Widget Component ───────────────────────────────
+function TurnstileWidget({ onVerify, onExpire }) {
+  const containerRef = useRef(null)
+  const widgetIdRef = useRef(null)
+
+  useEffect(() => {
+    const scriptId = 'cf-turnstile-script'
+
+    const renderWidget = () => {
+      if (containerRef.current && window.turnstile && widgetIdRef.current === null) {
+        widgetIdRef.current = window.turnstile.render(containerRef.current, {
+          sitekey: TURNSTILE_SITE_KEY,
+          callback: (token) => onVerify(token),
+          'expired-callback': () => {
+            onExpire()
+            widgetIdRef.current = null
+          },
+          theme: 'light',
+          size: 'normal',
+        })
+      }
+    }
+
+    if (window.turnstile) {
+      // Script already loaded (e.g. user navigated back)
+      renderWidget()
+    } else if (!document.getElementById(scriptId)) {
+      // First load — inject script and render on load
+      const script = document.createElement('script')
+      script.id = scriptId
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js'
+      script.async = true
+      script.defer = true
+      script.onload = renderWidget
+      document.head.appendChild(script)
+    } else {
+      // Script tag exists but hasn't finished loading yet — poll
+      const interval = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(interval)
+          renderWidget()
+        }
+      }, 100)
+      return () => clearInterval(interval)
+    }
+
+    return () => {
+      if (window.turnstile && widgetIdRef.current !== null) {
+        window.turnstile.remove(widgetIdRef.current)
+        widgetIdRef.current = null
+      }
+    }
+  }, [])
+
+  return (
+    <div>
+      <p className="font-sans font-medium text-charcoal text-sm mb-2">
+        Quick verification
+      </p>
+      <div ref={containerRef} />
+    </div>
+  )
+}
+// ─────────────────────────────────────────────────────────────
+
 export default function CheckoutPage() {
   const { items, clearCart } = useCartStore()
   const subtotal = items.reduce((s, i) => s + i.product.price * i.quantity, 0)
@@ -77,6 +149,10 @@ export default function CheckoutPage() {
   })
   const [errors, setErrors] = useState({})
 
+  // ── Turnstile state ──
+  const [turnstileToken, setTurnstileToken] = useState(null)
+  const [turnstileError, setTurnstileError] = useState(false)
+
   const validate = () => {
     const e = {}
     if (!form.name.trim()) e.name = 'Name is required'
@@ -88,6 +164,12 @@ export default function CheckoutPage() {
   }
 
   const handleSubmitDetails = () => {
+    // Check Turnstile first
+    if (!turnstileToken) {
+      setTurnstileError(true)
+      return
+    }
+    setTurnstileError(false)
     if (validate()) setStep('payment')
   }
 
@@ -101,6 +183,13 @@ export default function CheckoutPage() {
 
   return (
     <div className="section-pad">
+      <SEOHead
+        title="Checkout"
+        description="Complete your StickKhoo order. Pay via PayNow or DBS PayLah! and we'll ship your stickers within 2–4 working days."
+        url="/checkout"
+        noIndex={true}
+      />
+
       <div className="container-max">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14">
 
@@ -142,6 +231,22 @@ export default function CheckoutPage() {
                   <Field label="Email Address" name="email" type="email" placeholder="chris@email.com" value={form.email} onChange={handleChange('email')} error={errors.email} />
                   <Field label="Delivery Address" name="address" textarea placeholder="Blk 123 Yishun Ave 1, #05-678, Singapore 760123" value={form.address} onChange={handleChange('address')} error={errors.address} />
                   <Field label="Notes / Special Requests (Optional)" name="notes" textarea placeholder="Any special instructions? Let us know!" value={form.notes} onChange={handleChange('notes')} />
+
+                  {/* ── Cloudflare Turnstile ── */}
+                  <TurnstileWidget
+                    onVerify={(token) => {
+                      setTurnstileToken(token)
+                      setTurnstileError(false)
+                    }}
+                    onExpire={() => setTurnstileToken(null)}
+                  />
+                  {turnstileError && (
+                    <p className="font-mono text-xs text-red-500 -mt-2">
+                      Please complete the verification above before continuing.
+                    </p>
+                  )}
+                  {/* ─────────────────────── */}
+
                   <motion.button
                     whileTap={{ scale: 0.98 }}
                     onClick={handleSubmitDetails}
@@ -240,7 +345,7 @@ export default function CheckoutPage() {
             </AnimatePresence>
           </div>
 
-          {/* Right: Order summary */}
+          {/* Right: Order summary sidebar */}
           <div>
             <div className="bg-parchment rounded-3xl p-6 sticky top-24">
               <h3 className="font-display font-bold text-xl text-charcoal mb-5">Order Summary</h3>

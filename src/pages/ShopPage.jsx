@@ -6,6 +6,7 @@ import SearchFilterBar from '../components/SearchFilterBar'
 import SectionHeader from '../components/SectionHeader'
 import EmptyState from '../components/EmptyState'
 import { Link } from 'react-router-dom'
+import SEOHead from '../components/SEOHead'
 
 export default function ShopPage() {
   const [search, setSearch] = useState('')
@@ -33,6 +34,11 @@ export default function ShopPage() {
 
   return (
     <div className="section-pad">
+      <SEOHead
+        title="Shop All Stickers"
+        description="Browse all StickKhoo stickers — ducks, otters, food characters and more. Hand-drawn, waterproof vinyl, shipped from Singapore."
+        url="/shop"
+      />
       <div className="container-max">
         {/* Header */}
         <SectionHeader

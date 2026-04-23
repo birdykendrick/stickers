@@ -13,6 +13,8 @@ import sleepingDuckImg from '../assets/sleepingduck.png'
 import sleepyOtterImg from '../assets/sleepyotter.png'
 import forheaderImg from '../assets/forheader.png'
 
+import SEOHead from '../components/SEOHead'
+
 // ── Fade-up wrapper ──────────────────────────────────────────
 function FadeUp({ children, delay = 0, className = '' }) {
   return (
@@ -116,6 +118,11 @@ export default function HomePage() {
 
   return (
     <div>
+      <SEOHead
+        title="Cute Hand-Drawn Stickers from Singapore"
+        description="Shop StickKhoo — original hand-drawn stickers featuring ducks, otters, food characters & more. Made in Singapore, shipped with love."
+        url="/"
+      />
       {/* ── HERO ──────────────────────────────────────────────── */}
       <section className="relative min-h-[100vh] sm:min-h-[90vh] flex items-center overflow-hidden bg-cream">
         {/* Decorative blobs */}

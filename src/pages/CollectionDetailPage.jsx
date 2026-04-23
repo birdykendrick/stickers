@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { getSeriesBySlug, getProductsBySeries } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import EmptyState from '../components/EmptyState'
+import SEOHead from '../components/SEOHead'
 
 export default function CollectionDetailPage() {
   const { slug } = useParams()
@@ -26,6 +27,11 @@ export default function CollectionDetailPage() {
 
   return (
     <div>
+      <SEOHead
+        title={`${series.name} Collection`}
+        description={series.description}
+        url={`/collections/${series.slug}`}
+      />
       {/* Banner */}
       <div
         className="py-20 md:py-28 px-4 text-center relative overflow-hidden"
